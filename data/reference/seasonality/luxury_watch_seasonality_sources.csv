@@ -1,0 +1,25 @@
+series_id,series_source,source_url,month,series_factor,series_weight
+MRTSSM44831USN,US Census via FRED: Jewelry Stores Monthly Sales,https://fred.stlouisfed.org/series/MRTSSM44831USN,1,0.72261079,0.7000
+MRTSSM44831USN,US Census via FRED: Jewelry Stores Monthly Sales,https://fred.stlouisfed.org/series/MRTSSM44831USN,2,1.00388414,0.7000
+MRTSSM44831USN,US Census via FRED: Jewelry Stores Monthly Sales,https://fred.stlouisfed.org/series/MRTSSM44831USN,3,0.79536148,0.7000
+MRTSSM44831USN,US Census via FRED: Jewelry Stores Monthly Sales,https://fred.stlouisfed.org/series/MRTSSM44831USN,4,0.78647576,0.7000
+MRTSSM44831USN,US Census via FRED: Jewelry Stores Monthly Sales,https://fred.stlouisfed.org/series/MRTSSM44831USN,5,1.02217166,0.7000
+MRTSSM44831USN,US Census via FRED: Jewelry Stores Monthly Sales,https://fred.stlouisfed.org/series/MRTSSM44831USN,6,0.86545991,0.7000
+MRTSSM44831USN,US Census via FRED: Jewelry Stores Monthly Sales,https://fred.stlouisfed.org/series/MRTSSM44831USN,7,0.84445731,0.7000
+MRTSSM44831USN,US Census via FRED: Jewelry Stores Monthly Sales,https://fred.stlouisfed.org/series/MRTSSM44831USN,8,0.88534059,0.7000
+MRTSSM44831USN,US Census via FRED: Jewelry Stores Monthly Sales,https://fred.stlouisfed.org/series/MRTSSM44831USN,9,0.83207116,0.7000
+MRTSSM44831USN,US Census via FRED: Jewelry Stores Monthly Sales,https://fred.stlouisfed.org/series/MRTSSM44831USN,10,0.86626771,0.7000
+MRTSSM44831USN,US Census via FRED: Jewelry Stores Monthly Sales,https://fred.stlouisfed.org/series/MRTSSM44831USN,11,1.04084064,0.7000
+MRTSSM44831USN,US Census via FRED: Jewelry Stores Monthly Sales,https://fred.stlouisfed.org/series/MRTSSM44831USN,12,2.33505887,0.7000
+RSXFS,US Census via FRED: Retail and Food Services Sales Ex Autos,https://fred.stlouisfed.org/series/RSXFS,1,1.00044702,0.3000
+RSXFS,US Census via FRED: Retail and Food Services Sales Ex Autos,https://fred.stlouisfed.org/series/RSXFS,2,0.97493620,0.3000
+RSXFS,US Census via FRED: Retail and Food Services Sales Ex Autos,https://fred.stlouisfed.org/series/RSXFS,3,0.98441862,0.3000
+RSXFS,US Census via FRED: Retail and Food Services Sales Ex Autos,https://fred.stlouisfed.org/series/RSXFS,4,0.97659946,0.3000
+RSXFS,US Census via FRED: Retail and Food Services Sales Ex Autos,https://fred.stlouisfed.org/series/RSXFS,5,0.99183233,0.3000
+RSXFS,US Census via FRED: Retail and Food Services Sales Ex Autos,https://fred.stlouisfed.org/series/RSXFS,6,1.00143872,0.3000
+RSXFS,US Census via FRED: Retail and Food Services Sales Ex Autos,https://fred.stlouisfed.org/series/RSXFS,7,1.00241141,0.3000
+RSXFS,US Census via FRED: Retail and Food Services Sales Ex Autos,https://fred.stlouisfed.org/series/RSXFS,8,1.00634856,0.3000
+RSXFS,US Census via FRED: Retail and Food Services Sales Ex Autos,https://fred.stlouisfed.org/series/RSXFS,9,1.01179274,0.3000
+RSXFS,US Census via FRED: Retail and Food Services Sales Ex Autos,https://fred.stlouisfed.org/series/RSXFS,10,1.01550034,0.3000
+RSXFS,US Census via FRED: Retail and Food Services Sales Ex Autos,https://fred.stlouisfed.org/series/RSXFS,11,1.01752994,0.3000
+RSXFS,US Census via FRED: Retail and Food Services Sales Ex Autos,https://fred.stlouisfed.org/series/RSXFS,12,1.01674469,0.3000

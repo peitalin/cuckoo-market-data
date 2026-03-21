@@ -1,0 +1,398 @@
+date,sold_at,source,listing_id,seller_id,seller_type,sale_mechanism,brand,model,reference,condition,currency,sale_price,days_to_sell,sell_speed_eligible,sold_inference
+2026-03-02,2026-03-02T11:02:17.268+00:00,chrono24,44784266,Private Seller,private,listing,Panerai,Luminor Marina,PAM 00113,Good,USD,3572.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T00:51:12.805+00:00,chrono24,44327585,Private Seller,private,listing,TAG Heuer,Autavia,CBE2118.FC8246,Like new & unworn,USD,3800.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T07:46:33.617+00:00,chrono24,45017191,Private Seller,private,listing,Cartier,Santos,WSSA0039,Like new & unworn,USD,7250.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T08:05:13.172+00:00,chrono24,45022734,Private Seller,private,listing,Zenith,El Primero Chronograph,19.0130.400,Very good,USD,2259.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T08:46:05.815+00:00,chrono24,44010287,Private Seller,private,listing,TAG Heuer,Monaco Calibre 12,CAW2111 (Steve McQueen),Very good,USD,3500.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T09:12:13.167+00:00,chrono24,45086487,Private Seller,private,listing,Seiko,5 Sports,SNZF17K1,Very good,USD,180.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T11:09:22.247+00:00,chrono24,44755897,Private Seller,private,listing,Breitling,Colt GMT+,A32370,Very good,USD,1750.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T11:11:16.843+00:00,chrono24,45026036,Private Seller,private,listing,Seiko,5,7009-876A,Good,USD,124.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T11:30:51.214+00:00,chrono24,44832826,Private Seller,private,listing,TAG Heuer,Carrera Calibre HEUER 01,CAR2A5A.FT6044,Very good,USD,4119.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T11:37:38.466+00:00,chrono24,44855215,Private Seller,private,listing,Rolex,Daytona,116503 (Two-tone),Very good,USD,21370.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T11:47:09.335+00:00,chrono24,44387191,Private Seller,private,listing,TAG Heuer,Formula 1 Quartz,375.513,Good,USD,393.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T11:55:35.734+00:00,chrono24,45073731,Private Seller,private,listing,Omega,Seamaster Diver 300 M,210.32.42.20.01.001,Like new & unworn,USD,4499.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T13:04:45.705+00:00,chrono24,44126315,Private Seller,private,listing,Seiko,Prospex,SPB097J1 (Diving Watches),Very good,USD,590.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T13:14:24.139+00:00,chrono24,44522414,Private Seller,private,listing,Rolex,Datejust 36,16013,Very good,USD,5445.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T13:16:27.296+00:00,chrono24,45008820,Private Seller,private,listing,Seiko,5 Sports,SSK033K1,Very good,USD,300.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T13:43:58.82+00:00,chrono24,44942763,Private Seller,private,listing,Cartier,Tank,WSTA0053 (Tank Must),Very good,USD,3795.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T13:49:26.233+00:00,chrono24,44972980,Private Seller,private,listing,Omega,Speedmaster Mark II,145.014 (Speedmaster Vintage),Fair,USD,3072.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T13:49:36.774+00:00,chrono24,45017646,Private Seller,private,listing,Seiko,5,SNKP21J1,Like new & unworn,USD,230.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T13:51:14.775+00:00,chrono24,44948911,Private Seller,private,listing,Rolex,Air King,14000,Very good,USD,3609.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T13:57:55.642+00:00,chrono24,45032590,Private Seller,private,listing,Seiko,Chariot,2220-0430 (Vintage),Good,USD,224.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T14:13:27.985+00:00,chrono24,45052902,Private Seller,private,listing,Seiko,5,SNK621K1,Very good,USD,144.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T14:46:30.514+00:00,chrono24,44377117,Private Seller,private,listing,Rolex,Datejust 36,1603,Good,USD,3243.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T14:55:07.331+00:00,chrono24,44734979,Private Seller,private,listing,Omega,De Ville,511.0404,Very good,USD,650.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T15:03:18.445+00:00,chrono24,45056658,Private Seller,private,listing,Seiko,Prospex,SSC965P1 (Diving Watches),Like new & unworn,USD,603.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T15:09:19.827+00:00,chrono24,44939133,Private Seller,private,listing,Tudor,Submariner,79090,Good,USD,6495.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T15:12:00.203+00:00,chrono24,44620703,Private Seller,private,listing,Breitling,Superocean Heritage II 42,AB2010121L1A1,Very good,USD,4115.0,,False,api_sold_listing_state
+2026-03-05,2026-03-05T15:12:06.236+00:00,chrono24,44719110,Private Seller,private,listing,TAG Heuer,3000,934.213,Fair,USD,363.0,,False,api_sold_listing_state
+2026-03-06,2026-03-06T09:22:54.142+00:00,chrono24,44355974,"HOUBIDOU Co.,Ltd.",dealer,listing,Hublot,Classic Fusion Aerofusion,517.NX.0170.LR,Very good,USD,8010.0,,False,api_sold_listing_state
+2026-03-06,2026-03-06T14:50:38.329+00:00,chrono24,44830475,Private Seller,private,listing,Omega,Seamaster Diver 300 M,210.30.42.20.01.001,Very good,USD,4000.0,,False,api_sold_listing_state
+2026-03-07,2026-03-07T00:39:22.864+00:00,chrono24,44996988,"REPESTA Co., Ltd.",dealer,listing,Omega,Seamaster,2534.50,Very good,USD,2360.0,,False,api_sold_listing_state
+2026-03-07,2026-03-07T06:55:18.174+00:00,chrono24,44961725,Private Seller,private,listing,Breitling,Pluton,3100,Good,USD,1027.0,,False,api_sold_listing_state
+2026-03-07,2026-03-07T07:53:52.302+00:00,chrono24,43610574,Private Seller,private,listing,Breitling,Avi Chronograph 42 Tribute To Vought F4u Corsair Brand New Never Worn,A233801A1C1X1,Like new & unworn,USD,3300.0,,False,api_sold_listing_state
+2026-03-07,2026-03-07T08:31:17.575+00:00,chrono24,45097974,Watch Concept,dealer,listing,Omega,Constellation Quartz,123.20.27.60.02.003,Very good,USD,2965.0,,False,api_sold_listing_state
+2026-03-07,2026-03-07T08:34:18.769+00:00,chrono24,40942693,Private Seller,private,listing,TAG Heuer,Aquaracer,WAY101C.BA0746,Like new & unworn,USD,1548.0,,False,api_sold_listing_state
+2026-03-07,2026-03-07T09:15:18.779+00:00,chrono24,44760882,"REPESTA Co., Ltd.",dealer,listing,Omega,Speedmaster Date,3511.50,Fair,USD,1716.0,,False,api_sold_listing_state
+2026-03-07,2026-03-07T13:52:44.787+00:00,chrono24,45042967,Private Seller,private,listing,Seiko,Herren-armbanduhr Automatik Seiko Automatic 4R35B,SRPH89K1,Good,USD,230.0,,False,api_sold_listing_state
+2026-03-07,2026-03-07T14:10:45.339+00:00,chrono24,40508221,Private Seller,private,listing,Omega,Speedmaster Day Date,3521.80.00,Very good,USD,2292.0,,False,api_sold_listing_state
+2026-03-07,2026-03-07T16:22:24.648+00:00,chrono24,44880030,Private Seller,private,listing,TAG Heuer,Formula 1 Quartz,CAZ1012.BA0883 (Senna),Good,USD,943.0,,False,api_sold_listing_state
+2026-03-07,2026-03-07T16:31:05.714+00:00,chrono24,44692025,Private Seller,private,listing,Rolex,Oyster Precision,6430 (Speedking),Good,USD,2169.0,,False,api_sold_listing_state
+2026-03-07,2026-03-07T16:57:19.281+00:00,chrono24,44538951,Private Seller,private,listing,Tudor,Oysterdate Big Block,79170,Like new & unworn,USD,5924.0,,False,api_sold_listing_state
+2026-03-07,2026-03-07T23:19:12.938+00:00,chrono24,44714143,Private Seller,private,listing,Seiko,Snk615 Snk615k Men's Watch 5 Sports Automatic SNK615K1,SNK615K1,Like new & unworn,USD,137.0,,False,api_sold_listing_state
+2026-03-07,2026-03-07T23:37:44.375+00:00,chrono24,44943761,Private Seller,private,listing,Breitling,Aerospace EVO,V79363101B1S1,Very good,USD,4023.0,,False,api_sold_listing_state
+2026-03-08,2026-03-08T01:47:18.952+00:00,chrono24,44894467,Private Seller,private,listing,Omega,De Ville,511.0504,Very good,USD,328.0,,False,api_sold_listing_state
+2026-03-08,2026-03-08T02:53:16.497+00:00,chrono24,44971751,RWE Inc.,dealer,listing,Rolex,Datejust 36,1601,Very good,USD,4206.0,,False,api_sold_listing_state
+2026-03-08,2026-03-08T04:26:40.922+00:00,chrono24,44899261,Private Seller,private,listing,Breitling,Superocean 36,A17316D21A1S1,Very good,USD,2250.0,,False,api_sold_listing_state
+2026-03-08,2026-03-08T05:46:09.332+00:00,chrono24,44771662,Private Seller,private,listing,Seiko,5 Sports,SRPG41K1,Like new & unworn,USD,230.0,,False,api_sold_listing_state
+2026-03-08,2026-03-08T10:59:45.151+00:00,chrono24,44974917,Private Seller,private,listing,Rolex,Datejust 41,126334 (Jubilee),Like new & unworn,USD,13100.0,,False,api_sold_listing_state
+2026-03-08,2026-03-08T13:11:09.798+00:00,chrono24,41817277,Private Seller,private,listing,Audemars Piguet,Royal Oak,15500ST.OO.1220ST.02,Like new & unworn,USD,38348.0,,False,api_sold_listing_state
+2026-03-08,2026-03-08T13:11:32.984+00:00,chrono24,40955919,Private Seller,private,listing,Omega,Seamaster Diver 300 M,210.30.44.51.01.001,Good,USD,5200.0,,False,api_sold_listing_state
+2026-03-08,2026-03-08T13:26:46.603+00:00,chrono24,45089991,Private Seller,private,listing,Breitling,Superocean 42,A17375E71G1A1,Like new & unworn,USD,3321.0,,False,api_sold_listing_state
+2026-03-08,2026-03-08T14:28:43.171+00:00,chrono24,44760452,"REPESTA Co., Ltd.",dealer,listing,Omega,Seamaster Diver 300 M,2561.80,Good,USD,1642.0,,False,api_sold_listing_state
+2026-03-08,2026-03-08T17:36:13.674+00:00,chrono24,44922249,Private Seller,private,listing,Rolex,Datejust 41,126300 (Datejust smooth bezel),Very good,USD,8470.0,,False,api_sold_listing_state
+2026-03-08,2026-03-08T17:41:25.116+00:00,chrono24,45025333,Private Seller,private,listing,TAG Heuer,Monaco,CS2110.FC8119,Good,USD,3261.0,,False,api_sold_listing_state
+2026-03-08,2026-03-08T21:02:54.572+00:00,chrono24,44667075,Private Seller,private,listing,Omega,Speedmaster Professional Moonwatch,145.022 (Speedmaster Vintage),Good,USD,4496.0,,False,api_sold_listing_state
+2026-03-08,2026-03-08T21:50:03.219+00:00,chrono24,44452284,Private Seller,private,listing,TAG Heuer,Formula 1 Quartz,WAU1112,Good,USD,550.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T00:15:33.087+00:00,chrono24,44717408,Private Seller,private,listing,Breitling,Avenger,E13360,Very good,USD,2489.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T00:17:04.329+00:00,chrono24,44723640,Private Seller,private,listing,Seiko,Premier Automatic Muy poco usado! Caja y documentacion,SPB005J1,Like new & unworn,USD,474.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T00:37:03.847+00:00,chrono24,45090327,Private Seller,private,listing,TAG Heuer,Formula 1 Solargraph,WBY111A.FT8106,Like new & unworn,USD,1795.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T00:53:21.451+00:00,chrono24,44761758,Private Seller,private,listing,Cartier,Tank Vermeil,590005,Good,USD,2015.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T02:58:02.175+00:00,chrono24,45026297,Private Seller,private,listing,Omega,Seamaster Aqua Terra,220.10.38.20.02.001,Very good,USD,3970.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T04:30:39.307+00:00,chrono24,44914819,Private Seller,private,listing,Seiko,5 Sports,SRPD69K1,Like new & unworn,USD,285.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T04:43:00.6+00:00,chrono24,44976624,Private Seller,private,listing,Seiko,Presage,SRPG09J1,Very good,USD,360.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T05:23:33.989+00:00,chrono24,45018171,Private Seller,private,listing,Seiko,Alpinist,SARB017 (Diving Watches),Good,USD,758.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T05:34:21.356+00:00,chrono24,44912681,Private Seller,private,listing,Seiko,5 Sports,SRPG41K1,Like new & unworn,USD,250.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T06:04:08.542+00:00,chrono24,45090658,Couronne,dealer,listing,Omega,Seamaster Aqua Terra,220.12.41.21.06.001,Very good,USD,4855.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T06:09:20.416+00:00,chrono24,39211714,Private Seller,private,listing,Omega,Constellation,167.005,Very good,USD,1892.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T06:19:44.04+00:00,chrono24,44387741,Private Seller,private,listing,Omega,Seamaster Diver 300 M,212.30.41.20.01.003,Very good,USD,3100.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T06:26:18.599+00:00,chrono24,45070267,Private Seller,private,listing,Seiko,Lord Matic,5606-7000 (Vintage),Very good,USD,208.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T07:04:26.44+00:00,chrono24,44946547,Private Seller,private,listing,IWC,43 Spitfire Big Purchased in 2025,IW329702,Like new & unworn,USD,6200.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T07:08:54.132+00:00,chrono24,44507065,Private Seller,private,listing,Seiko,Arctura,7L22-0AA0,Very good,USD,169.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T07:09:31.98+00:00,chrono24,45142348,Private Seller,private,listing,Omega,Speedmaster Professional Moonwatch,310.30.42.50.01.002,Like new & unworn,USD,6546.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T08:01:02.981+00:00,chrono24,44485840,Private Seller,private,listing,Seiko,Alpinist,SCVF005 (Diving Watches),Good,USD,722.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T10:33:54.642+00:00,chrono24,44922315,Private Seller,private,listing,IWC,Porsche Design,IW3335,Good,USD,738.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T11:05:18.833+00:00,chrono24,45169347,Private Seller,private,listing,Breitling,Avenger,AB0147101L1X1,Very good,USD,4681.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T11:35:32.101+00:00,chrono24,44782889,Private Seller,private,listing,Omega,Seamaster 120 M,176.004 (Seamaster Vintage),Good,USD,6657.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T11:53:23.953+00:00,chrono24,45189157,Private Seller,private,listing,Seiko,Prospex,SSC817P1 (Diving Watches),Very good,USD,429.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T12:46:49.369+00:00,chrono24,44942730,Private Seller,private,listing,TAG Heuer,Carrera Calibre 5,WAR201D.FC6291,Very good,USD,1799.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T14:54:24.687+00:00,chrono24,45114947,Private Seller,private,listing,TAG Heuer,Monza,CR2110,Very good,USD,2726.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T15:39:18.501+00:00,chrono24,44884458,Private Seller,private,listing,Seiko,Presage,SARA015,Very good,USD,1750.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T19:41:07.289+00:00,chrono24,45157749,Private Seller,private,listing,Cartier,Santos,WSSA0037,Good,USD,7000.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T19:48:30.513+00:00,chrono24,45025058,Private Seller,private,listing,Rolex,Datejust 41,126334 (Jubilee),Very good,USD,12885.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T20:24:37.164+00:00,chrono24,44701725,Deals Guru,dealer,listing,Seiko,Alpinist,SPB210J1 (Diving Watches),Like new & unworn,USD,590.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T21:22:03.605+00:00,chrono24,45004381,Private Seller,private,listing,TAG Heuer,2000,WK 2117,Good,USD,549.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T21:27:23.78+00:00,chrono24,45089597,Private Seller,private,listing,Cartier,Tank,2415 (Tank Must),Fair,USD,1499.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T21:55:05.734+00:00,chrono24,44526980,Private Seller,private,listing,Seiko,Prospex,SLA061J1 (Diving Watches),Like new & unworn,USD,2166.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T22:01:31.729+00:00,chrono24,44957949,Private Seller,private,listing,Seiko,Sportsmatic Deluxe 5 Fluted Bezel,7619-7040,Good,USD,301.0,,False,api_sold_listing_state
+2026-03-09,2026-03-09T22:08:34.639+00:00,chrono24,44546946,Private Seller,private,listing,Panerai,Radiomir 8 Days,PAM 00610,Very good,USD,3350.0,,False,api_sold_listing_state
+2026-03-10,2026-03-10T01:59:12.248+00:00,chrono24,44636189,Private Seller,private,listing,Seiko,5 Sports,srpl87k1,Like new & unworn,USD,287.0,,False,api_sold_listing_state
+2026-03-10,2026-03-10T02:04:46.999+00:00,chrono24,43318192,Private Seller,private,listing,TAG Heuer,Formula 1 Calibre 5,WAZ2011.BA0843,Very good,USD,1615.0,,False,api_sold_listing_state
+2026-03-10,2026-03-10T02:10:07.664+00:00,chrono24,44740518,Private Seller,private,listing,Rolex,Datejust 41,126334,Good,USD,10000.0,,False,api_sold_listing_state
+2026-03-10,2026-03-10T04:52:41.503+00:00,chrono24,44504254,Private Seller,private,listing,Seiko,5 Sports,SRPG27K1,Very good,USD,213.0,,False,api_sold_listing_state
+2026-03-10,2026-03-10T05:13:54.634+00:00,chrono24,45085707,Private Seller,private,listing,Seiko,From Japan Perpetual Calendar Watch Seiko Men's Full set in new condition,7T86-0AC0,Like new & unworn,USD,295.0,,False,api_sold_listing_state
+2026-03-10,2026-03-10T05:17:48.534+00:00,chrono24,45088274,Private Seller,private,listing,Omega,Seamaster Planet Ocean,215.32.44.21.01.002,Very good,USD,4950.0,,False,api_sold_listing_state
+2026-03-10,2026-03-10T06:28:44.908+00:00,chrono24,44546551,Private Seller,private,listing,TAG Heuer,Aquaracer,WBP1114.BA0000,Very good,USD,1481.0,,False,api_sold_listing_state
+2026-03-10,2026-03-10T08:12:32.333+00:00,chrono24,44676960,Private Seller,private,listing,Cartier,Tank,WSTA0090 (Tank Must),Like new & unworn,USD,3427.0,,False,api_sold_listing_state
+2026-03-10,2026-03-10T08:42:55.853+00:00,chrono24,44945540,Private Seller,private,listing,Rolex,Precision,4498,Good,USD,2726.0,,False,api_sold_listing_state
+2026-03-10,2026-03-10T09:14:02.648+00:00,chrono24,45036917,Private Seller,private,listing,Seiko,Scuba,SKX009K2,Good,USD,356.0,,False,api_sold_listing_state
+2026-03-10,2026-03-10T11:47:58.974+00:00,chrono24,45086380,Private Seller,private,listing,Cartier,Tank,Cartier Must de Cartier Tank (Tank Must),Very good,USD,2074.0,,False,api_sold_listing_state
+2026-03-10,2026-03-10T11:52:30.47+00:00,chrono24,44731355,Private Seller,private,listing,Breitling,Aerospace,E56060,Like new & unworn,USD,1372.0,,False,api_sold_listing_state
+2026-03-10,2026-03-10T12:23:14.02+00:00,chrono24,44616339,Private Seller,private,listing,TAG Heuer,Aquaracer,CAF1112,Good,USD,770.0,,False,api_sold_listing_state
+2026-03-10,2026-03-10T23:57:23.479+00:00,chrono24,44290655,Private Seller,private,listing,Breitling,Avenger,E13360,Very good,USD,2695.0,,False,api_sold_listing_state
+2026-03-11,2026-03-11T00:26:49.758+00:00,chrono24,44879409,Private Seller,private,listing,Breitling,Superocean Heritage 42,A1732116/C832,Good,USD,3188.0,,False,api_sold_listing_state
+2026-03-11,2026-03-11T00:29:31.067+00:00,chrono24,44668281,Private Seller,private,listing,Rolex,Datejust 36,16013,Like new & unworn,USD,5971.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T09:44:21.47+00:00,chrono24,44635598,Private Seller,private,listing,Seiko,Prospex,SSC947P1 (Diving Watches),Like new & unworn,USD,525.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T09:47:46.656+00:00,chrono24,45073102,LUXEDEALMASTER,dealer,listing,Omega,Seamaster Diver 300 M,210.32.44.51.01.001,Very good,USD,5500.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T09:51:05.292+00:00,chrono24,44437565,Boxandpapers,dealer,listing,Tudor,Pelagos,25807KN-0001,Like new & unworn,USD,3223.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T09:59:30.615+00:00,chrono24,43084618,Private Seller,private,listing,Tudor,Black Bay GMT,79830RB,Like new & unworn,USD,3324.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T10:00:11.574+00:00,chrono24,45178339,Private Seller,private,listing,Tudor,Black Bay GMT,M79833MN-0004,Very good,USD,3300.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T10:03:22.476+00:00,chrono24,45172331,Private Seller,private,listing,Breitling,Chronomat,AB0136161C1S1,Very good,USD,5542.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T10:54:16.349+00:00,chrono24,44905882,Private Seller,private,listing,Seiko,Prospex king turttle edition limite night vision,SRPK43K1,Like new & unworn,USD,569.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T10:57:21.828+00:00,chrono24,44188734,Private Seller,private,listing,Breitling,Cockpit,B49350,Very good,USD,3025.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T10:57:45.285+00:00,chrono24,44976776,Private Seller,private,listing,Seiko,5 Sports,SRPE51K1,Very good,USD,175.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T10:57:48.561+00:00,chrono24,45024506,Private Seller,private,listing,Seiko,5,SNK063J5,Like new & unworn,USD,190.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T11:00:35.002+00:00,chrono24,42464980,Boxandpapers,dealer,listing,Tudor,Heritage Chrono,70330N,Good,USD,2801.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T11:04:18.48+00:00,chrono24,45004541,Private Seller,private,listing,Audemars Piguet,Royal Oak Chronograph,26320ST.OO.1220ST.02,Like new & unworn,USD,34535.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T11:25:59.218+00:00,chrono24,45242068,Private Seller,private,listing,IWC,Pilot Chronograph,IW388117,Like new & unworn,USD,7185.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T11:28:44.38+00:00,chrono24,44716637,Private Seller,private,listing,Cartier,Santos Galbée,1565,Very good,USD,2934.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T12:11:34.753+00:00,chrono24,45022673,Private Seller,private,listing,Seiko,5 Sports,SRPE61K1,Very good,USD,234.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T12:11:49.866+00:00,chrono24,45156480,Private Seller,private,listing,Rolex,Oysterdate Precision,6694,Very good,USD,2315.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T12:20:53.859+00:00,chrono24,44909034,Private Seller,private,listing,Omega,Seamaster,2850.50,Fair,USD,723.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T13:42:20.585+00:00,chrono24,45134916,Private Seller,private,listing,Seiko,Scuba,SKX013K2 (Diving Watches),Good,USD,330.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T13:54:55.341+00:00,chrono24,43902690,Private Seller,private,listing,Hublot,Big Bang 44 mm,301.PB.131.PB,Very good,USD,16590.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T14:01:07.903+00:00,chrono24,45041227,Private Seller,private,listing,Seiko,Scuba,SKX009K2,Very good,USD,320.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T14:04:20.222+00:00,chrono24,44777619,Private Seller,private,listing,Zenith,El Primero Chronomaster,03.2080.4021/21.C496,Like new & unworn,USD,4619.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T15:14:55.005+00:00,chrono24,43261758,Private Seller,private,listing,Breitling,Navitimer,81600 (Navitimer Vintage),Good,USD,3574.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T15:17:24.705+00:00,chrono24,43780775,Private Seller,private,listing,TAG Heuer,Carrera,CBS2240.FC8319,Very good,USD,17597.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T15:20:29.712+00:00,chrono24,43661700,Private Seller,private,listing,Cartier,Santos,2961,Fair,USD,3555.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T15:23:40.727+00:00,chrono24,45196245,Private Seller,private,listing,Zenith,El Primero Chronomaster,03.A384.400/21.M384,Very good,USD,5100.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T15:24:10.782+00:00,chrono24,44656312,Private Seller,private,listing,Tudor,Glamour Double Date,57000,Good,USD,1800.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T15:29:42.617+00:00,chrono24,45084057,Private Seller,private,listing,Seiko,Prospex,SRPF03 (Diving Watches),Good,USD,326.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T16:57:37.06+00:00,chrono24,40474699,Private Seller,private,listing,Cartier,Santos,2965,Very good,USD,2606.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T16:58:08.971+00:00,chrono24,45119155,Private Seller,private,listing,Omega,Seamaster,165.001 (Seamaster Vintage),Very good,USD,875.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T17:00:35.885+00:00,chrono24,44528369,Private Seller,private,listing,IWC,Portuguese Automatic,IW501701,Like new & unworn,USD,11258.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T17:04:09.595+00:00,chrono24,44968163,Private Seller,private,listing,Cartier,Ballon Bleu,3005,Very good,USD,3875.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T17:07:45.904+00:00,chrono24,44025163,Private Seller,private,listing,Omega,Genève,5200.50,Very good,USD,1541.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T17:10:50.662+00:00,chrono24,44975485,Private Seller,private,listing,Breitling,Endurance Pro,X82310281B1S1,Like new & unworn,USD,2300.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T18:42:57.022+00:00,chrono24,42705525,Private Seller,private,listing,Hublot,Super B,1926.NL30.1,Very good,USD,3930.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T18:46:20.495+00:00,chrono24,43160267,Private Seller,private,listing,Rolex,Datejust 36,126234,Like new & unworn,USD,12753.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T18:49:28.156+00:00,chrono24,44438071,Private Seller,private,listing,Seiko,Scuba,unknown,unknown,USD,408.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T18:52:01.298+00:00,chrono24,45138269,Private Seller,private,listing,Tudor,Royal,28600-0005,Like new & unworn,USD,2311.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T18:55:03.692+00:00,chrono24,44192708,Private Seller,private,listing,Seiko,Prospex,SPB187J1 (Diving Watches),Very good,USD,728.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T19:07:27.304+00:00,chrono24,44825193,Private Seller,private,listing,Vacheron Constantin,Patrimony,33060,Very good,USD,4630.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T19:10:51.328+00:00,chrono24,45236523,Private Seller,private,listing,Seiko,Prospex,SSC813P1,Good,USD,450.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T20:17:46.463+00:00,chrono24,44955786,Private Seller,private,listing,Breitling,Bentley Flying B,R28362,Very good,USD,14064.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T20:27:01.496+00:00,chrono24,44997196,Private Seller,private,listing,Hublot,Classic Fusion Chronograph,541.CM.1171.RX (Black Magic),Very good,USD,6800.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T20:30:06.287+00:00,chrono24,45107713,Private Seller,private,listing,Omega,Constellation,168.005,Very good,USD,2074.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T20:30:10.269+00:00,chrono24,44934092,Private Seller,private,listing,Omega,Seamaster Diver 300 M,210.92.44.20.01.003,Like new & unworn,USD,6850.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T20:39:27.268+00:00,chrono24,44868799,Private Seller,private,listing,Seiko,Prospex,SLA055J1,Very good,USD,2500.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T20:39:31.012+00:00,chrono24,45137640,Private Seller,private,listing,Seiko,Prospex,SPB153J1 (Diving Watches),Very good,USD,800.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T20:57:33.69+00:00,chrono24,45120506,Private Seller,private,listing,Seiko,Kinetic,SKA691P1 (Quartz Watches),Good,USD,196.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T22:01:58.726+00:00,chrono24,43762040,Private Seller,private,listing,Omega,Time Computer,196.0039,Very good,USD,998.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T22:05:52.975+00:00,chrono24,44975608,Private Seller,private,listing,Vacheron Constantin,Overseas Chronograph,5500V/110A-B148,Like new & unworn,USD,28750.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T22:08:59.07+00:00,chrono24,44961515,Private Seller,private,listing,Omega,Constellation,796.1201,Like new & unworn,USD,1630.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T22:15:21.791+00:00,chrono24,45042882,Private Seller,private,listing,Seiko,5 Sports,SSK029K1,Very good,USD,300.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T22:18:30.453+00:00,chrono24,44847207,Private Seller,private,listing,Omega,Seamaster 120 M,136.027 (Seamaster Vintage),Very good,USD,3267.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T22:55:45.838+00:00,chrono24,44676742,Private Seller,private,listing,Audemars Piguet,Royal Oak Offshore Diver,unknown,unknown,USD,16999.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T23:48:00.84+00:00,chrono24,45042686,Private Seller,private,listing,Seiko,Prospex,SPB265 (Diving Watches),Like new & unworn,USD,1050.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T23:51:17.282+00:00,chrono24,44949680,Private Seller,private,listing,Seiko,Brothers Collaboration Limited Edition Model Full Set Limited Edition,SBJG023,Very good,USD,457.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T23:51:26.518+00:00,chrono24,45117113,Private Seller,private,listing,Tudor,Black Bay GMT,M79830RB-0010,Like new & unworn,USD,3519.0,,False,api_sold_listing_state
+2026-03-12,2026-03-12T23:53:44.072+00:00,chrono24,44424731,Private Seller,private,listing,Omega,Seamaster,166.010 (Seamaster Vintage),Good,USD,1300.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T00:03:15.644+00:00,chrono24,44673495,Private Seller,private,listing,Rolex,Cellini,5115/9,Like new & unworn,USD,5100.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T00:03:43.41+00:00,chrono24,45134652,Private Seller,private,listing,IWC,Portuguese Automatic,IW500109,Very good,USD,5333.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T00:09:38.869+00:00,chrono24,44156023,Private Seller,private,listing,TAG Heuer,Monaco,CAW211R.FC6401 (Monaco Gulf),Very good,USD,6000.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T00:12:33.206+00:00,chrono24,45228978,Private Seller,private,listing,Seiko,Monster,SKX781,Good,USD,291.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T02:04:18.174+00:00,chrono24,44535049,Private Seller,private,listing,Rolex,Datejust 36,16233,Very good,USD,6000.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T02:06:43.587+00:00,chrono24,44493867,Private Seller,private,listing,Breitling,Chronomat 36,A10380101C1A1,Very good,USD,2751.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T02:10:10.638+00:00,chrono24,45152376,Private Seller,private,listing,Omega,Seamaster,196.0050 (Seamaster Vintage),Good,USD,889.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T02:25:12.274+00:00,chrono24,44824397,Private Seller,private,listing,TAG Heuer,Super Professional,WS2110-2,Good,USD,1187.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T03:38:38.49+00:00,chrono24,44674025,Private Seller,private,listing,Seiko,Credor,GCBP997,Fair,USD,1799.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T03:47:55.836+00:00,chrono24,45067796,Private Seller,private,listing,Rolex,Daytona,116523,Very good,USD,17909.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T03:57:18.263+00:00,chrono24,45117030,Private Seller,private,listing,Seiko,5 Sports,SRPD63,Very good,USD,195.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T04:03:42.001+00:00,chrono24,43631695,Private Seller,private,listing,TAG Heuer,Carrera,WV2112,Very good,USD,1190.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T07:07:33.82+00:00,chrono24,44610891,Private Seller,private,listing,Seiko,5 Sports,SSK021,Like new & unworn,USD,336.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T09:09:58.751+00:00,chrono24,42811529,Private Seller,private,listing,Hublot,King Power,731.NX.1190.RX,Very good,USD,6500.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T09:10:01.386+00:00,chrono24,45196969,Private Seller,private,listing,Seiko,Prospex,SSC813P1 (Diving Watches),Very good,USD,415.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T09:10:10.923+00:00,chrono24,44817151,watchuwant,dealer,listing,Seiko,5,7S26-3110,Very good,USD,491.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T11:12:36.878+00:00,chrono24,45041983,Private Seller,private,listing,Rolex,Explorer II,16570 (Explorer II 16570 Black),Very good,USD,6800.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T11:13:04.868+00:00,chrono24,44547159,Private Seller,private,listing,Rolex,Sea-Dweller Deepsea,126660,Like new & unworn,USD,12100.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T12:13:12.76+00:00,chrono24,44973131,Private Seller,private,listing,Cartier,Panthère,WSPN0010,Good,USD,3316.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T13:14:43.862+00:00,chrono24,44480373,Private Seller,private,listing,Zenith,Defy Skyline,03.9300.3620/51.I001,Like new & unworn,USD,5242.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T13:15:18.028+00:00,chrono24,44670399,Private Seller,private,listing,Rolex,Datejust 36,116244 (Datejust Diamonds),Good,USD,12900.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T15:17:19.211+00:00,chrono24,45218366,Private Seller,private,listing,Jaeger-LeCoultre,Reverso Memory,255.8.82,Good,USD,5608.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T17:19:51.101+00:00,chrono24,44163462,Private Seller,private,listing,Rolex,Submariner Date,16610,Like new & unworn,USD,8888.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T17:20:19.794+00:00,chrono24,45204871,Private Seller,private,listing,Tudor,Black Bay,79833mn-0001,Good,USD,3792.0,,False,api_sold_listing_state
+2026-03-13,2026-03-13T21:24:24.177+00:00,chrono24,44921951,Private Seller,private,listing,Omega,Seamaster,105.001-62 (Seamaster Vintage),Very good,USD,4616.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T01:30:04.985+00:00,chrono24,44992320,Private Seller,private,listing,Omega,De Ville,511.0404,Good,USD,550.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T04:33:44.307+00:00,chrono24,44978856,"REPESTA Co., Ltd.",dealer,listing,Omega,Speedmaster Reduced,3510.50,Good,USD,2449.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T04:34:14.116+00:00,chrono24,45229819,Private Seller,private,listing,Zenith,Il quadrante é diverso dalla foto e contiene una sigla.,30 2760 226,Like new & unworn,USD,1187.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T04:34:22.386+00:00,chrono24,45044372,"REPESTA Co., Ltd.",dealer,listing,Omega,Seamaster Aqua Terra,2503.50,Good,USD,2575.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T04:34:38.402+00:00,chrono24,44803317,Private Seller,private,listing,Cartier,Santos,W2SA0009,Like new & unworn,USD,9797.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T05:35:18.271+00:00,chrono24,44803554,"REPESTA Co., Ltd.",dealer,listing,Breitling,Chronomat,A13050.1,Very good,USD,2027.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T05:35:44.442+00:00,chrono24,45052471,Joaillerie Royale,dealer,listing,Cartier,Pasha Seatimer,2790,Very good,USD,3780.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T05:35:54.229+00:00,chrono24,44939165,"REPESTA Co., Ltd.",dealer,listing,Omega,Speedmaster Reduced,3510.50,Good,USD,2449.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T06:36:37.387+00:00,chrono24,45078773,"REPESTA Co., Ltd.",dealer,listing,Cartier,Tank,2386,Good,USD,4109.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T08:40:47.12+00:00,chrono24,44868149,Private Seller,private,listing,Seiko,5 Sports,SRPD59K1,Very good,USD,175.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T10:44:29.928+00:00,chrono24,45265199,"REPESTA Co., Ltd.",dealer,listing,TAG Heuer,Aquaracer,WAB2011,Very good,USD,708.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T15:00:13.589+00:00,chrono24,45159871,Private Seller,private,listing,Omega,Seamaster,2536.50,Good,USD,2842.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T15:19:55.486+00:00,chrono24,44000206,"Sincere Partners Co., Ltd",dealer,listing,Seiko,King,SJE087J1,Like new & unworn,USD,1825.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T16:27:24.741+00:00,chrono24,45017058,Private Seller,private,listing,Seiko,GS,5646-7010 (Vintage),Good,USD,1449.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T16:34:33.737+00:00,chrono24,45154069,Private Seller,private,listing,Rolex,Datejust 41,126333,Like new & unworn,USD,13950.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T18:09:37.641+00:00,chrono24,45293286,Private Seller,private,listing,IWC,Pilot Mark,IW325501,Very good,USD,2100.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T19:16:07.406+00:00,chrono24,44931632,ALLU,dealer,listing,Omega,Seamaster Aqua Terra,220.10.38.20.03.001,Very good,USD,4919.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T19:27:46.796+00:00,chrono24,45153618,Private Seller,private,listing,Seiko,Premier Kinetic Perpetual,7D48-0AA0,Good,USD,225.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T19:33:32.562+00:00,chrono24,43735469,Private Seller,private,listing,Audemars Piguet,Royal Oak Selfwinding,unknown,unknown,USD,30500.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T20:34:17.356+00:00,chrono24,45011102,Private Seller,private,listing,Cartier,Ballon Bleu,WSBB0062,Very good,USD,4235.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T20:43:23.421+00:00,chrono24,44321001,Private Seller,private,listing,Seiko,Prospex,SNE589P1,Good,USD,391.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T20:51:22.229+00:00,chrono24,44794663,Private Seller,private,listing,Omega,Seamaster,105.005-66 (Seamaster Vintage),Fair,USD,3569.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T20:54:30.341+00:00,chrono24,44163303,Private Seller,private,listing,Seiko,Credor,9570-5220,Good,USD,449.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T21:56:56.368+00:00,chrono24,44869707,Private Seller,private,listing,Rolex,Datejust 41,126331,Very good,USD,14245.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T21:57:37.48+00:00,chrono24,45100247,Private Seller,private,listing,IWC,Portuguese Automatic,IW500710,Very good,USD,6443.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T22:03:47.796+00:00,chrono24,45036748,Private Seller,private,listing,Omega,Seamaster Diver 300 M,210.32.42.20.03.001,Very good,USD,3999.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T22:08:22.464+00:00,chrono24,44271781,Private Seller,private,listing,Breitling,Superocean 44,A17367D71B1A1,Good,USD,2724.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T22:10:49.916+00:00,chrono24,44953656,"REPESTA Co., Ltd.",dealer,listing,Cartier,Tank Vermeil,5057001,Very good,USD,1710.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T23:48:46.042+00:00,chrono24,44755340,Private Seller,private,listing,Jaeger-LeCoultre,Master Control,145.8.89,Good,USD,3000.0,,False,api_sold_listing_state
+2026-03-14,2026-03-14T23:48:48.406+00:00,chrono24,44908658,Private Seller,private,listing,Rolex,Lady-Datejust,69178,Very good,USD,8955.0,,False,api_sold_listing_state
+2026-03-15,2026-03-15T01:01:27.609+00:00,chrono24,43415238,Private Seller,private,listing,TAG Heuer,Formula 1 Calibre 16,CAZ2010.BA0876,Good,USD,1424.0,,False,api_sold_listing_state
+2026-03-15,2026-03-15T02:17:03.361+00:00,chrono24,45042902,Private Seller,private,listing,TAG Heuer,Formula 1 Quartz,WAZ1112.BA0875,Very good,USD,775.0,,False,api_sold_listing_state
+2026-03-15,2026-03-15T02:22:01.617+00:00,chrono24,44900917,Private Seller,private,listing,Seiko,Scuba,2625-0010,Very good,USD,129.0,,False,api_sold_listing_state
+2026-03-15,2026-03-15T11:49:37.684+00:00,chrono24,44942567,Private Seller,private,listing,Seiko,Prospex,SSC937P1 (Diving Watches),Very good,USD,1119.0,,False,api_sold_listing_state
+2026-03-15,2026-03-15T11:50:06.736+00:00,chrono24,45018542,Private Seller,private,listing,IWC,Pilot,IW328104,Like new & unworn,USD,6800.0,,False,api_sold_listing_state
+2026-03-15,2026-03-15T13:53:15.333+00:00,chrono24,45068171,Private Seller,private,listing,Zenith,El Primero Chronomaster,18.1260.4021,Like new & unworn,USD,13085.0,,False,api_sold_listing_state
+2026-03-15,2026-03-15T16:58:36.509+00:00,chrono24,44956179,Private Seller,private,listing,Seiko,5,SNKP21J1,Like new & unworn,USD,251.0,,False,api_sold_listing_state
+2026-03-15,2026-03-15T19:01:14.924+00:00,chrono24,44936648,Private Seller,private,listing,Omega,Speedmaster Professional Moonwatch,3573.50.00,Good,USD,4700.0,,False,api_sold_listing_state
+2026-03-15,2026-03-15T22:04:15.794+00:00,chrono24,44831870,Office IKO Co.,dealer,listing,Seiko,Prospex,SBDC217 (Diving Watches),Very good,USD,708.0,,False,api_sold_listing_state
+2026-03-15,2026-03-15T22:04:47.572+00:00,chrono24,45190522,Private Seller,private,listing,Rolex,Datejust II,unknown,unknown,USD,8600.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T00:06:42.104+00:00,chrono24,45124317,Private Seller,private,listing,Seiko,Diver Automatic,7S26-0040,Very good,USD,176.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T03:25:17.213+00:00,chrono24,42983998,Private Seller,private,listing,Omega,Seamaster DeVille,135.001 (Seamaster Vintage),Good,USD,1655.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T03:34:13.081+00:00,chrono24,42800777,Private Seller,private,listing,Rolex,Oyster Perpetual 34,1007 (Oyster Perpetual Vintage),Good,USD,5250.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T03:36:16.077+00:00,chrono24,41660343,Office IKO Co.,dealer,listing,TAG Heuer,Carrera,CBN2A1B.BA0643,Very good,USD,3435.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T04:44:31.156+00:00,chrono24,43999787,"Sincere Partners Co., Ltd",dealer,listing,Seiko,King,SDKS019,Like new & unworn,USD,1478.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T04:45:40.857+00:00,chrono24,45290457,Private Seller,private,listing,Jaeger-LeCoultre,Reverso Duoface,3988482,Very good,USD,9998.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T05:56:29.739+00:00,chrono24,45292777,Private Seller,private,listing,Cartier,Tank Vermeil,3 66001 (Tank Must),Good,USD,1882.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T07:58:07.093+00:00,chrono24,45125439,Private Seller,private,listing,Breitling,Superocean 44,A17367D71B1A1,Very good,USD,2431.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T07:58:14.038+00:00,chrono24,45284108,Private Seller,private,listing,Seiko,Credor,5A74-0020 (Quartz Watches),Very good,USD,270.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T08:58:37.236+00:00,chrono24,45158311,Private Seller,private,listing,IWC,Pilot Mark,IW328207,Very good,USD,4150.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T14:06:16.414+00:00,chrono24,45130108,Private Seller,private,listing,Cartier,Tank,2416,Like new & unworn,USD,2347.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T14:14:55.194+00:00,chrono24,44401059,Private Seller,private,listing,Omega,Speedmaster,311.92.44.51.01.005 (Dark Side of the Moon),Like new & unworn,USD,8641.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T15:16:27.547+00:00,chrono24,44546229,Private Seller,private,listing,Rolex,Oyster Perpetual 41,124300,Very good,USD,9000.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T16:16:55.805+00:00,chrono24,44887564,Cadran Patine,dealer,listing,Rolex,Oyster Perpetual Date,1501 (Oyster Perpetual Vintage),Good,USD,2856.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T17:19:18.117+00:00,chrono24,44816411,Private Seller,private,listing,Tudor,North Flag,91210N,Very good,USD,3100.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T18:19:44.537+00:00,chrono24,44922515,Private Seller,private,listing,Omega,Speedmaster Day Date,32228000,Good,USD,2500.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T18:20:09.916+00:00,chrono24,44499305,Private Seller,private,listing,Seiko,Presage,SRPG09J1,Very good,USD,407.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T19:20:43.517+00:00,chrono24,44854523,Big Ben Time Zone,dealer,listing,Rolex,Submariner Date,16613,Very good,USD,9900.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T19:20:50.296+00:00,chrono24,45042357,Cadran Patine,dealer,listing,Rolex,Oyster Perpetual 34,1005 (Oyster Perpetual Vintage),Good,USD,3578.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T19:20:54.881+00:00,chrono24,44309999,Private Seller,private,listing,Seiko,5 Sports,SRPE72K1,Like new & unworn,USD,235.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T20:22:52.712+00:00,chrono24,44770863,Private Seller,private,listing,Panerai,Luminor Chrono Limited Edition 136 of 500,PAM 00052,Like new & unworn,USD,8800.0,,False,api_sold_listing_state
+2026-03-16,2026-03-16T20:22:56.115+00:00,chrono24,45016665,Private Seller,private,listing,Rolex,Cellini Danaos,4243 (Arabic Dial),Good,USD,8878.0,,False,api_sold_listing_state
+2026-03-17,2026-03-17T14:46:00.618+00:00,chrono24,44435343,Private Seller,private,listing,Seiko,Prospex,SJE093J1 (Diving Watches),Like new & unworn,USD,5921.0,,False,api_sold_listing_state
+2026-03-18,2026-03-18T01:24:24.342+00:00,chrono24,45097389,Private Seller,private,listing,Omega,Speedmaster Reduced,3539.50.00,Like new & unworn,USD,4236.0,,False,api_sold_listing_state
+2026-03-18,2026-03-18T01:40:39.673+00:00,chrono24,45331906,Office IKO Co.,dealer,listing,Jaeger-LeCoultre,Polaris,Q9068650,Very good,USD,8502.0,,False,api_sold_listing_state
+2026-03-18,2026-03-18T05:05:08.006+00:00,chrono24,44351073,Private Seller,private,listing,Tudor,Royal,M28400-0009,Like new & unworn,USD,2148.0,,False,api_sold_listing_state
+2026-03-18,2026-03-18T09:12:24.471+00:00,chrono24,44001497,Private Seller,private,listing,Rolex,Daytona,116519,Good,USD,23366.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T07:41:56.808+00:00,chrono24,45056015,Private Seller,private,listing,Seiko,Presage,SSA361J1,Very good,USD,827.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T07:43:41.971+00:00,chrono24,43642672,Private Seller,private,listing,Zenith,Chronomaster Sport,95.3100.3600/39.R951,Very good,USD,7200.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T14:31:46.806+00:00,chrono24,44859727,Private Seller,private,listing,Omega,Seamaster Diver 300 M,21230412001003,Good,USD,3052.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T14:47:16.921+00:00,chrono24,45068345,Private Seller,private,listing,Omega,Speedmaster Professional Moonwatch,310.30.42.50.01.002,Like new & unworn,USD,6542.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T14:58:41.593+00:00,chrono24,44700249,Private Seller,private,listing,Breitling,Colt Automatic,A17350,Good,USD,1402.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T15:13:44.822+00:00,chrono24,45201903,Private Seller,private,listing,Breitling,Bentley Motors,A25362,Very good,USD,4202.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T15:21:30.023+00:00,chrono24,44990236,Private Seller,private,listing,IWC,Portuguese Automatic,IW501701,Like new & unworn,USD,9250.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T15:21:49.244+00:00,chrono24,45168163,Private Seller,private,listing,Omega,Seamaster Diver 300 M,210.30.42.20.03.001,Very good,USD,3250.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T15:22:23.059+00:00,chrono24,45188620,Private Seller,private,listing,Hublot,Classic Fusion,542.PX.1180.RX,Good,USD,10000.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T15:35:31.514+00:00,chrono24,44273096,Private Seller,private,listing,Seiko,5 Sports,SRPL99,Like new & unworn,USD,545.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T15:36:07.465+00:00,chrono24,44786462,Private Seller,private,listing,Seiko,Prospex,SPB239J1 (Diving Watches),Like new & unworn,USD,895.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T15:41:58.644+00:00,chrono24,44238178,Antique Watchlife Inc.,dealer,listing,Vacheron Constantin,Classic,7397,Good,USD,6563.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T15:50:34.491+00:00,chrono24,45088019,Private Seller,private,listing,Tudor,Pelagos,25600TN,Good,USD,3150.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T15:56:55.582+00:00,chrono24,45279807,"REPESTA Co., Ltd.",dealer,listing,TAG Heuer,Monaco Calibre 12,CAW2111.FC6183 (Steve McQueen),Good,USD,4381.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T15:59:58.364+00:00,chrono24,45347642,Private Seller,private,listing,Omega,Constellation Day-Date,168.029,Very good,USD,1175.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T16:09:30.26+00:00,chrono24,44997394,"REPESTA Co., Ltd.",dealer,listing,Omega,Speedmaster Date,3513.50,Very good,USD,1667.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T16:17:36.119+00:00,chrono24,42183789,Private Seller,private,listing,Rolex,Milgauss,116400GV,Good,USD,9973.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T16:40:33.541+00:00,chrono24,44760520,Private Seller,private,listing,Cartier,Pasha,1352,Good,USD,1755.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T17:01:01.149+00:00,chrono24,44353073,Private Seller,private,listing,Rolex,Daytona,116503,Very good,USD,19775.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T17:04:40.138+00:00,chrono24,44949934,Private Seller,private,listing,Rolex,Air King,5500,Good,USD,3093.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T17:38:02.564+00:00,chrono24,45322649,Private Seller,private,listing,Tudor,Black Bay Bronze,79250BM-0005,Very good,USD,2941.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T17:38:10.373+00:00,chrono24,44817368,Private Seller,private,listing,Tudor,Prince Date,72000,Very good,USD,1100.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T18:15:49.014+00:00,chrono24,44919417,Private Seller,private,listing,Seiko,Cocktail Time Seiko Cocktail Time SARB065,SARB065,Very good,USD,341.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T18:32:30.375+00:00,chrono24,45234347,Private Seller,private,listing,Rolex,Datejust 36,1601,Very good,USD,3916.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T18:32:39.522+00:00,chrono24,45291856,Private Seller,private,listing,Panerai,Luminor Chrono 44 Mm Pam01218,PAM 01218,Very good,USD,6399.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T18:32:48.734+00:00,chrono24,45127321,Private Seller,private,listing,Omega,Speedmaster Professional Moonwatch,311.30.42.30.01.005,Very good,USD,4400.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T18:59:44.531+00:00,chrono24,44625827,Private Seller,private,listing,Seiko,Presage,SSA425J1,Like new & unworn,USD,491.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T19:17:30.926+00:00,chrono24,45270733,Private Seller,private,listing,Seiko,Presage,SSA461J1,Like new & unworn,USD,532.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T19:24:06.006+00:00,chrono24,45124855,Private Seller,private,listing,Omega,Louis Brandt,1750500,Very good,USD,7881.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T19:27:05.076+00:00,chrono24,44529836,Private Seller,private,listing,Seiko,Presage,SSA409J1,Like new & unworn,USD,1665.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T19:30:37.131+00:00,chrono24,45111380,Private Seller,private,listing,Seiko,Presage,SRPH78J1,Like new & unworn,USD,639.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T19:33:28.642+00:00,chrono24,44976517,Private Seller,private,listing,Seiko,Prospex,SRPF07K1,Like new & unworn,USD,350.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T19:37:07.316+00:00,chrono24,43380252,Private Seller,private,listing,Panerai,Luminor,PAM 00795,Very good,USD,5200.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T19:41:32.11+00:00,chrono24,44635014,Private Seller,private,listing,Seiko,Prospex,SNE518P1,Like new & unworn,USD,379.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T20:05:48.148+00:00,chrono24,44932757,Private Seller,private,listing,Breitling,Endurance Pro,X82310D51B1S1,Like new & unworn,USD,2315.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T20:41:55.399+00:00,chrono24,44971902,Private Seller,private,listing,Omega,Globemaster,130.23.39.21.03.001,Very good,USD,5799.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T20:49:09.047+00:00,chrono24,44270481,Private Seller,private,listing,IWC,Pilot Chronograph Top Gun,IW388106,Like new & unworn,USD,9200.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T21:04:10.723+00:00,chrono24,44802178,Private Seller,private,listing,Omega,Seamaster Planet Ocean Chronograph,2210.50.00,Fair,USD,3023.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T21:15:19.169+00:00,chrono24,45170675,Private Seller,private,listing,Seiko,King,5625-7000 (Vintage),Good,USD,494.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T21:15:22.135+00:00,chrono24,43953495,Private Seller,private,listing,Hublot,King Power,701.CO.0180.RX,Like new & unworn,USD,12072.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T21:36:19.06+00:00,chrono24,45269503,Private Seller,private,listing,Omega,Seamaster,145.008 (Seamaster Vintage),Good,USD,2136.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T22:21:53.438+00:00,chrono24,45168329,Private Seller,private,listing,Seiko,5 Sports,SRPK91,Like new & unworn,USD,294.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T22:24:19.148+00:00,chrono24,45224279,Private Seller,private,listing,Rolex,Air King,14000M,Very good,USD,4149.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T22:41:46.694+00:00,chrono24,44568891,Private Seller,private,listing,Breitling,Superocean 44,C17391,Good,USD,2731.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T22:45:38.112+00:00,chrono24,44326565,Private Seller,private,listing,IWC,Pilot Chronograph Top Gun,IW389105,Very good,USD,7310.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T22:45:53.663+00:00,chrono24,45219943,Private Seller,private,listing,Seiko,Prospex,SSC955P1 (Diving Watches),Like new & unworn,USD,630.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T23:24:13.838+00:00,chrono24,45354500,Private Seller,private,listing,Breitling,Emergency,A73322,Good,USD,3073.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T23:24:35.865+00:00,chrono24,42719304,Private Seller,private,listing,Zenith,Bumper Automatic 133.8 34mm Automatic Vintage Running Well,133.8,Good,USD,890.0,,False,api_sold_listing_state
+2026-03-19,2026-03-19T23:45:19.292+00:00,chrono24,45174322,Private Seller,private,listing,Tudor,Black Bay GMT,79830RB,Very good,USD,2855.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T00:09:14.537+00:00,chrono24,45292683,Private Seller,private,listing,Tudor,Black Bay 36,M79500-0004,Very good,USD,2100.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T00:35:13.585+00:00,chrono24,44274537,Private Seller,private,listing,Rolex,Datejust 36,1601 (Datejust Gold/Steel),Good,USD,3820.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T00:48:39.946+00:00,chrono24,40611239,Private Seller,private,listing,Breitling,Superocean Heritage II Chronograph,A1331216/C963/276S,Very good,USD,4126.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T00:52:37.635+00:00,chrono24,43920591,Private Seller,private,listing,Rolex,Oyster,4444 (Oyster Royal),Good,USD,2323.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T01:24:06.38+00:00,chrono24,45016791,Private Seller,private,listing,Rolex,Submariner Date,16610,Good,USD,8000.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T01:27:52.826+00:00,chrono24,45068309,Private Seller,private,listing,Omega,Seamaster,196.0106,Fair,USD,634.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T01:28:30.908+00:00,chrono24,44578929,Private Seller,private,listing,Rolex,GMT-Master II,126710BLNR (Batman),Like new & unworn,USD,17299.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T01:45:46.978+00:00,chrono24,45014445,Private Seller,private,listing,TAG Heuer,Formula 1 Quartz,WAH1010.BT0717,Very good,USD,586.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T02:12:35.445+00:00,chrono24,45022403,Private Seller,private,listing,Omega,Speedmaster Professional Moonwatch,310.30.42.50.01.002,Very good,USD,5700.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T02:17:44.966+00:00,chrono24,45028234,Private Seller,private,listing,Hublot,Classic,1521.2,Good,USD,1207.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T02:53:24.556+00:00,chrono24,44897928,Private Seller,private,listing,Seiko,Presage,SRPE41J1,Like new & unworn,USD,345.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T02:55:38.251+00:00,chrono24,44993265,Private Seller,private,listing,Rolex,Daytona,116515ln (Everose),Very good,USD,31838.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T02:56:26.694+00:00,chrono24,44937944,Private Seller,private,listing,Rolex,Datejust Oysterquartz,17013,Incomplete,USD,4448.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T03:09:47.049+00:00,chrono24,45330193,Private Seller,private,listing,Seiko,Brothers Collaboration Limited Edition Model,SBJG024,Like new & unworn,USD,378.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T03:17:17.108+00:00,chrono24,45040234,Private Seller,private,listing,Rolex,Datejust 36,116200 (Datejust smooth bezel),Very good,USD,6500.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T03:43:31.587+00:00,chrono24,44065082,Private Seller,private,listing,TAG Heuer,Formula 1 Quartz,WA1211,Fair,USD,529.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T04:24:00.625+00:00,chrono24,45037936,Private Seller,private,listing,Rolex,Air King,114200 (Domino's Pizza),Good,USD,5000.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T04:33:57.6+00:00,chrono24,40517409,Private Seller,private,listing,Seiko,Pogue,6139-6002 (Vintage),Very good,USD,941.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T04:49:59.466+00:00,chrono24,44451359,Private Seller,private,listing,Breitling,Superocean Heritage II 42,AB2010121B1S1,Very good,USD,2711.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T05:08:07.548+00:00,chrono24,44647899,Private Seller,private,listing,Jaeger-LeCoultre,Mystery,727-722-103D,Very good,USD,2904.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T05:16:03.494+00:00,chrono24,45204502,Private Seller,private,listing,Omega,Constellation Day-Date,168.045,Good,USD,1117.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T05:23:29.049+00:00,chrono24,43761678,Private Seller,private,listing,Breitling,Endurance Pro,X823101K1C1S1,Like new & unworn,USD,2992.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T06:26:58.022+00:00,chrono24,44436804,Private Seller,private,listing,TAG Heuer,Carrera Calibre 16,CV2A1S.FC6236,Like new & unworn,USD,2499.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T06:27:24.534+00:00,chrono24,45125850,Private Seller,private,listing,Seiko,5 Sports,SSK035K1,Like new & unworn,USD,382.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T07:04:06.556+00:00,chrono24,44088860,Private Seller,private,listing,Omega,Seamaster,166.003 (Seamaster Vintage),Good,USD,1053.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T08:06:20.616+00:00,chrono24,44635193,Private Seller,private,listing,Seiko,Alpinist,SPB199J1 (Diving Watches),Good,USD,924.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T08:23:37.324+00:00,chrono24,44981271,Kagiya Inc.,dealer,listing,Cartier,Santos,WSSA0062,Very good,USD,7426.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T09:03:06.106+00:00,chrono24,44318114,Private Seller,private,listing,TAG Heuer,Monaco,CBL2111.FC6453,Very good,USD,4498.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T09:10:34.678+00:00,chrono24,45223400,Private Seller,private,listing,Seiko,5 Sports,SRPG35K1,Like new & unworn,USD,200.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T09:32:41.026+00:00,chrono24,45141728,Private Seller,private,listing,Omega,Speedmaster Day Date,3523.30,Very good,USD,1895.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T10:27:57.917+00:00,chrono24,45167748,Private Seller,private,listing,Rolex,Datejust 31,178240,Like new & unworn,USD,6862.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T10:38:15.338+00:00,chrono24,43147045,Private Seller,private,listing,Seiko,5 Rally Sport Original Bezel Great Shape Running and Keeping Time,6119-7173,Good,USD,475.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T10:53:53.829+00:00,chrono24,45191840,Private Seller,private,listing,Seiko,Presage,SPB171J1,Very good,USD,1500.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T11:05:19.757+00:00,chrono24,45311179,Private Seller,private,listing,Tudor,Pelagos,M25600TB-0001,Very good,USD,3100.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T11:17:42.6+00:00,chrono24,45357784,Deals Guru,dealer,listing,Seiko,5 Sports,SSK035K1,Like new & unworn,USD,310.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T11:57:50.836+00:00,chrono24,44092122,Private Seller,private,listing,Seiko,Marinemaster,SJE119J1 (Diving Watches),Like new & unworn,USD,2297.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T12:49:14.38+00:00,chrono24,45343887,Private Seller,private,listing,Seiko,Prospex,SRPG13 (Diving Watches),Like new & unworn,USD,339.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T14:00:26.955+00:00,chrono24,44312765,Private Seller,private,listing,Tudor,Heritage Chrono Blue,70330B,Very good,USD,3478.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T14:03:30.481+00:00,chrono24,44992726,Private Seller,private,listing,Cartier,Santos,W2SA0009,Like new & unworn,USD,10295.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T14:40:21.935+00:00,chrono24,44614538,Private Seller,private,listing,TAG Heuer,2000,875.206,Like new & unworn,USD,944.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T15:19:06.204+00:00,chrono24,45070888,Private Seller,private,listing,Omega,Seamaster Diver 300 M,2533.50.00,Good,USD,2015.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T16:04:47.426+00:00,chrono24,45290131,Private Seller,private,listing,Seiko,Pogue,6139-6002 (Vintage),Good,USD,818.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T16:12:52.893+00:00,chrono24,45357821,Deals Guru,dealer,listing,Seiko,Presage,SRPK15J1,Like new & unworn,USD,360.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T16:53:37.575+00:00,chrono24,45139385,Private Seller,private,listing,Rolex,Sea-Dweller Deepsea,136660,Like new & unworn,USD,13500.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T17:18:16.543+00:00,chrono24,45148012,Private Seller,private,listing,IWC,Da Vinci Chronograph,IW3736 (Da Vinci Moonphase),Very good,USD,2587.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T17:34:41.668+00:00,chrono24,43399292,Private Seller,private,listing,Cartier,Tank,2413 (Tank Must),Very good,USD,3079.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T17:34:52.17+00:00,chrono24,45126853,Private Seller,private,listing,Omega,Speedmaster Broad Arrow,3551.50.00,Very good,USD,3498.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T19:13:49.321+00:00,chrono24,45234389,Private Seller,private,listing,Omega,Speedmaster,3510.81 (Speedmaster Michael Schumacher),Very good,USD,2769.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T19:42:57.764+00:00,chrono24,42913230,Private Seller,private,listing,Omega,Speedmaster Racing,326.30.40.50.02.001,Very good,USD,3157.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T19:50:11.602+00:00,chrono24,45041003,Private Seller,private,listing,Tudor,Royal,28600-0001,Good,USD,1864.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T20:05:47.803+00:00,chrono24,45137334,Private Seller,private,listing,Omega,Speedmaster Racing,326.32.40.50.06.001,Very good,USD,3663.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T20:35:45.726+00:00,chrono24,45316445,Private Seller,private,listing,Rolex,Datejust 36,16233,Good,USD,5764.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T20:45:29.568+00:00,chrono24,45287097,Private Seller,private,listing,Omega,Speedmaster '57,332.10.41.51.10.001,Good,USD,6223.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T20:57:57.049+00:00,chrono24,44963871,Private Seller,private,listing,Rolex,Day-Date 36,118238 (Presidential),Fair,USD,23913.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T21:43:07.684+00:00,chrono24,43078789,Private Seller,private,listing,Zenith,El Primero Stratos Flyback,03.2060.405/21.m2060,Very good,USD,4862.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T22:14:16.848+00:00,chrono24,45053269,Private Seller,private,listing,Tudor,Pelagos,25707B/22,Like new & unworn,USD,2864.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T22:17:18.787+00:00,chrono24,45157238,Private Seller,private,listing,Breitling,Aerospace,E56062,Very good,USD,1909.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T22:17:28.671+00:00,chrono24,45208020,Private Seller,private,listing,Seiko,Type II,4623-8020,Good,USD,159.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T22:21:13.809+00:00,chrono24,44403765,Private Seller,private,listing,Seiko,Alpinist,SPB197J1 (Diving Watches),Fair,USD,988.0,,False,api_sold_listing_state
+2026-03-20,2026-03-20T22:33:30.974+00:00,chrono24,44772068,Private Seller,private,listing,Cartier,Tank Française,2465,Good,USD,3100.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T00:56:15.852+00:00,chrono24,45072629,Private Seller,private,listing,Seiko,Monster,7S26-0350,Very good,USD,400.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T01:46:43.383+00:00,chrono24,44540019,Private Seller,private,listing,Rolex,Daytona,126508,Like new & unworn,USD,76932.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T01:55:03.91+00:00,chrono24,45206674,Private Seller,private,listing,Tudor,Ranger,M79950-0003,Very good,USD,2244.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T03:28:01.564+00:00,chrono24,45072033,Private Seller,private,listing,Rolex,Orchid,2059,Very good,USD,2567.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T03:50:43.16+00:00,chrono24,44465396,Private Seller,private,listing,TAG Heuer,Formula 1 Quartz,CAZ1014.BA0842,Very good,USD,950.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T03:54:34.223+00:00,chrono24,45246289,Private Seller,private,listing,Jaeger-LeCoultre,Reverso,290.8.60,Good,USD,5025.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T05:05:45.721+00:00,chrono24,45134781,Private Seller,private,listing,Tudor,Prince Date Day,76213,Good,USD,2176.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T05:33:32.627+00:00,chrono24,45073280,Private Seller,private,listing,Seiko,Prospex,SPB321J1,Good,USD,600.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T06:04:17.439+00:00,chrono24,44883682,Private Seller,private,listing,TAG Heuer,Formula 1 Quartz,CAZ101N.FC8243,Very good,USD,1250.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T06:21:52.304+00:00,chrono24,45121735,Private Seller,private,listing,Seiko,Marine Master Mechanical Diver's Watch 1965 SJE117J1 Full Set Box and Papers worn for three weeks,SJE117JC,Very good,USD,2081.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T06:26:25.635+00:00,chrono24,45213870,Private Seller,private,listing,Seiko,5,7009-876A (Vintage),Good,USD,124.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T06:29:23.364+00:00,chrono24,44688068,Private Seller,private,listing,Seiko,World Time,6117-6400 (Vintage),Good,USD,620.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T06:32:55.017+00:00,chrono24,45117230,Private Seller,private,listing,Seiko,Prospex,SPB117J1 (Diving Watches),Good,USD,570.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T06:33:46.936+00:00,chrono24,43622728,Private Seller,private,listing,TAG Heuer,Monaco Calibre 11,CAW211D (Steve McQueen),Good,USD,4995.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T06:48:48.893+00:00,chrono24,45068848,Private Seller,private,listing,Breitling,Montbrillant,AB 0131,Very good,USD,3341.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T06:49:14.579+00:00,chrono24,45141991,Private Seller,private,listing,Rolex,Datejust 36,116233,Like new & unworn,USD,12939.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T07:01:06.842+00:00,chrono24,44936577,Private Seller,private,listing,Seiko,5 Sports,SRPH25K1,Good,USD,189.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T07:09:02.035+00:00,chrono24,45082901,Private Seller,private,listing,Rolex,Oyster Perpetual 34,114200,Fair,USD,5925.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T07:46:38.035+00:00,chrono24,45357653,Private Seller,private,listing,Seiko,Presage,SRPK15J1,Very good,USD,301.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T08:23:11.253+00:00,chrono24,44700673,Private Seller,private,listing,Omega,Speedmaster Reduced,175.0032,Very good,USD,2717.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T10:07:27.904+00:00,chrono24,45150494,Private Seller,private,listing,TAG Heuer,Aquaracer 500M,WAK2180.FT6027,Very good,USD,1200.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T10:28:43.602+00:00,chrono24,44879014,Private Seller,private,listing,TAG Heuer,Aquaracer Lady,WBD1321.BB0320,Very good,USD,2588.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T10:32:27.925+00:00,chrono24,45014343,Private Seller,private,listing,Rolex,Sea-Dweller Deepsea,126660,Like new & unworn,USD,13389.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T10:33:17.601+00:00,chrono24,44376498,Private Seller,private,listing,Jaeger-LeCoultre,Reverso Classique,250.8.86,Very good,USD,4063.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T10:44:47.259+00:00,chrono24,45207712,Private Seller,private,listing,TAG Heuer,Carrera Calibre 16,CV2010,Very good,USD,1800.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T11:19:29.105+00:00,chrono24,45325781,Private Seller,private,listing,Tudor,Ranger,M79950-0001,Good,USD,2553.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T11:35:00.191+00:00,chrono24,44185350,Private Seller,private,listing,TAG Heuer,Carrera,CBS221B.BA0045,Like new & unworn,USD,11528.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T11:51:18.585+00:00,chrono24,45163599,Private Seller,private,listing,Tudor,Submariner,79090,Very good,USD,5791.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T12:11:19.873+00:00,chrono24,45151780,Private Seller,private,listing,Seiko,5 Huf limied edición Limited Edition Full Set New and Unworn SRPM09K1,SRPM09K1,Like new & unworn,USD,587.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T12:12:24.832+00:00,chrono24,39344695,Private Seller,private,listing,Rolex,Oyster Perpetual 179313,179313,Like new & unworn,USD,9200.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T12:29:21.726+00:00,chrono24,45246625,Private Seller,private,listing,Rolex,Air King,116900,Very good,USD,5293.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T12:48:06.821+00:00,chrono24,44717821,Private Seller,private,listing,Cartier,Tank Solo,3170,Good,USD,2604.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T13:08:22.001+00:00,chrono24,44525629,Private Seller,private,listing,Breitling,Top Time,AB01771A1B1X1 (Thunderball),Like new & unworn,USD,5634.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T13:32:06.549+00:00,chrono24,45275868,Private Seller,private,listing,Rolex,GMT-Master II,116710LN (GMT-Master II black bezel),Very good,USD,11704.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T15:17:38.371+00:00,chrono24,41928096,Private Seller,private,listing,Rolex,Datejust Turn-O-Graph,16263 (Datejust Gold/Steel),Very good,USD,6744.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T15:29:10.451+00:00,chrono24,44779627,Private Seller,private,listing,Tudor,1926,91350-0001,Like new & unworn,USD,1229.0,,False,api_sold_listing_state
