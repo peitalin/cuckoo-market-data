@@ -1,2 +1,2 @@
-# export-csv uses only Python standard-library modules.
+# this repo uses only Python standard-library modules.
 # Install with: python3 -m pip install -r requirements.txt

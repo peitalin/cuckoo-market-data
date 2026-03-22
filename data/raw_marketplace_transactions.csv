@@ -396,3 +396,4 @@ date,sold_at,source,listing_id,seller_id,seller_type,sale_mechanism,brand,model,
 2026-03-21,2026-03-21T13:32:06.549+00:00,chrono24,45275868,Private Seller,private,listing,Rolex,GMT-Master II,116710LN (GMT-Master II black bezel),Very good,USD,11704.0,,False,api_sold_listing_state
 2026-03-21,2026-03-21T15:17:38.371+00:00,chrono24,41928096,Private Seller,private,listing,Rolex,Datejust Turn-O-Graph,16263 (Datejust Gold/Steel),Very good,USD,6744.0,,False,api_sold_listing_state
 2026-03-21,2026-03-21T15:29:10.451+00:00,chrono24,44779627,Private Seller,private,listing,Tudor,1926,91350-0001,Like new & unworn,USD,1229.0,,False,api_sold_listing_state
+2026-03-21,2026-03-21T15:40:55.848+00:00,chrono24,44963747,Private Seller,private,listing,Zenith,Defy,95.9000.670/51.M9000,Good,USD,3650.0,,False,api_sold_listing_state
