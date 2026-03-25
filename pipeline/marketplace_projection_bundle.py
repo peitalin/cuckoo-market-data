@@ -23,16 +23,18 @@ def _write_assumptions_summary() -> None:
     assumptions_output = MARKETPLACE_FINANCE_DIR / DATA_PATHS.data_generation_assumptions_md
     assumption_text = dedent(
         f"""
-        # Audience and Revenue Projection Assumptions (36-Month Synthetic Model)
+        # Audience, Revenue, and Expense Projection Assumptions (36-Month Synthetic Model)
 
         This document justifies the assumptions used to generate the workbook:
         - `synthetic_marketplace_projection_model.xlsx`
 
         Workbook sheets:
-        - `MarketplaceFees` (marketplace fee revenue driver)
-        - `MAU` (MAU rollup with embedded cohort acquisition and retention matrix)
+        - `Summary` (36-month income-statement style rollup)
+- `Marketplace Revenue` (marketplace fee revenue driver)
+        - `MAU & Operating Metrics` (MAU rollup with embedded cohort acquisition and retention matrix)
         - `Subscriptions` (subscription revenue)
-        - `Ads` (advertising revenue)
+        - `Advertising` (advertising revenue)
+        - `OpEx` (cloud, marketing, and G&A costs)
 
         ## Source of Truth
 
@@ -43,7 +45,7 @@ def _write_assumptions_summary() -> None:
 
         ## 1) Modeling Objective
 
-        The goal is not point-forecast precision. It is to produce an educational, internally consistent revenue scenario with:
+        The goal is not point-forecast precision. It is to produce an educational, internally consistent revenue and expense scenario with:
         - realistic seasonality,
         - conservative but positive medium-term growth,
         - and explicit levers that can be tuned for sensitivity analysis.
@@ -87,7 +89,7 @@ def _write_assumptions_summary() -> None:
         - Active subscribers are constrained by both retained subscribers and current-period conversion.
         - Subscription revenue is derived from active subscribers and the fixed monthly price.
 
-        Fields in workbook sheet `MAU`:
+        Fields in workbook sheet `MAU & Operating Metrics`:
         - `month`: month bucket for the projection row.
         - `year_index`: whether the row falls in projection year 1, 2, or 3.
         - `phase`: coarse growth stage label for the scenario.
@@ -100,7 +102,7 @@ def _write_assumptions_summary() -> None:
         - `month`: month bucket for the projection row.
         - `year_index`: whether the row falls in projection year 1, 2, or 3.
         - `phase`: coarse growth stage label for the scenario.
-        - `mau`: projected monthly active users from the MAU sheet.
+        - `mau`: projected monthly active users from the MAU & Operating Metrics sheet.
         - `subscription_conversion_rate`: modeled MAU-to-paid conversion rate.
         - `subscription_retention_rate`: modeled monthly subscriber retention rate.
         - `retained_subscribers`: subscribers retained from the prior month.
@@ -124,13 +126,32 @@ def _write_assumptions_summary() -> None:
         - CPA is straightforward for educational modeling.
         - A session and pageview build makes ad revenue easier to diligence from MAU than a hidden maturity multiplier.
 
-        ## 6) Seasonality Assumptions
+        ## 6) Expense Assumptions
+
+        - Cloud and infrastructure costs are modeled from `MAU & Operating Metrics.mau`, `MAU & Operating Metrics.new_users`, and `Advertising.pageviews` instead of as flat hand-entered totals.
+        - R2 storage scales from `{REVENUE_ASSUMPTIONS.r2_storage_start_gb:.0f}` GB to `{REVENUE_ASSUMPTIONS.r2_storage_target_end_gb:.0f}` GB over the full model horizon based on cumulative new users.
+        - Managed Postgres is simplified to one primary instance plus an optional read-only replica that only activates above `{REVENUE_ASSUMPTIONS.postgres_read_replica_mau_threshold}` MAU.
+        - Cloudflare costs are modeled as a single hosting plus Workers bucket, with Workers scaling from backend requests and CPU time implied by pageviews and new-user onboarding requests.
+        - Transactional email cost is simplified to a flat `${REVENUE_ASSUMPTIONS.transactional_email_monthly_usd:.2f}` monthly SaaS fee.
+        - Sales and marketing are modeled as explicit holiday-flight budgets by channel, active only in November and December, not as opaque CAC math.
+        - G&A is intentionally simplified in the PE style: no payroll line, just team size for software-seat sizing plus one-time incorporation cost.
+
+        Justification:
+        - A PE-style model usually keeps high-signal, controllable cost buckets and avoids false precision on immaterial line items.
+        - Payroll belongs in a fuller operating model, but if the goal is a quick market model, cloud + paid marketing + light G&A is easier to diligence.
+
+        Current simplified G&A assumptions:
+        - team size: `{REVENUE_ASSUMPTIONS.team_size_year1}` in Year 1, `{REVENUE_ASSUMPTIONS.team_size_year2}` in Year 2, `{REVENUE_ASSUMPTIONS.team_size_year3}` in Year 3
+        - software tools per team member: `${REVENUE_ASSUMPTIONS.software_tools_per_team_member_monthly_usd:.2f}` / month
+        - incorporation setup: `${REVENUE_ASSUMPTIONS.incorporation_setup_usd:.2f}` one-time
+
+        ## 7) Seasonality Assumptions
 
         Seasonality is sourced from FRED monthly retail series:
         - https://fred.stlouisfed.org/series/MRTSSM44831USN
         - https://fred.stlouisfed.org/series/RSXFS
 
-        ## 7) Conservatism and Reproducibility
+        ## 8) Conservatism and Reproducibility
 
         - Random seed: `{REVENUE_ASSUMPTIONS.seed}`
         """

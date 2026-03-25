@@ -18,10 +18,12 @@ NS_MAIN = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 NS_REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 NS_PACKAGE = "http://schemas.openxmlformats.org/package/2006/relationships"
 
-SHEET_MARKETPLACE_FEES = "MarketplaceFees"
-SHEET_MAU = "MAU"
+SHEET_SUMMARY = "Summary"
+SHEET_MARKETPLACE_FEES = "Marketplace Revenue"
+SHEET_MAU = "MAU & Operating Metrics"
 SHEET_SUBSCRIPTIONS = "Subscriptions"
-SHEET_ADS = "Ads"
+SHEET_ADS = "Advertising"
+SHEET_EXPENSES = "OpEx"
 
 
 def _col_name(index: int) -> str:
@@ -269,6 +271,23 @@ def write_projection_workbook(
         rows.append(_blank_row())
         return rows, refs
 
+    def _section_assumption_block_at(
+        start_row: int,
+        title: str,
+        details: str,
+        spec_rows: list[tuple[str, str | float | int, str]],
+    ) -> tuple[list[list[Cell]], dict[str, str]]:
+        rows = [
+            _section_row(title, details),
+            [Cell.string("name"), Cell.string("value"), Cell.string("details")],
+        ]
+        refs: dict[str, str] = {}
+        for offset, (name, value, row_details) in enumerate(spec_rows, start=2):
+            rows.append(_assumption_row(name, value, row_details))
+            refs[name] = f"$B${start_row + offset}"
+        rows.append(_blank_row())
+        return rows, refs
+
     def _retained_share_value(age: int) -> float:
         if age <= 0:
             return 1.0
@@ -284,7 +303,7 @@ def write_projection_workbook(
         )
 
     marketplace_preamble, marketplace_refs = _sheet_assumption_block(
-        "MarketplaceFees Assumptions",
+        "Marketplace Revenue Assumptions",
         "Inputs used by the marketplace fee projection below.",
         [
             ("projection_start_month", assumptions.projection_start_month, "First month of the synthetic projection in YYYY-MM format."),
@@ -302,7 +321,7 @@ def write_projection_workbook(
         ],
     )
     mau_preamble, mau_refs = _sheet_assumption_block(
-        "MAU Assumptions",
+        "MAU & Operating Metrics Assumptions",
         "Inputs used by the MAU rollup and cohort acquisition/retention model below.",
         [
             ("projection_months", assumptions.projection_months, "Number of projected monthly rows in the workbook model."),
@@ -338,11 +357,11 @@ def write_projection_workbook(
             ("subscription_retention_end", assumptions.subscription_retention_end, "Target monthly subscriber retention rate approached over time."),
             ("subscription_retention_monthly_improvement_rate", assumptions.subscription_retention_monthly_improvement_rate, "Share of the remaining retention-rate gap closed each month."),
             ("subscription_price_usd", assumptions.subscription_price_usd, "Monthly subscription price used by the Subscriptions sheet."),
-            ("dependency", "MAU.mau", "Subscriber-state and subscription revenue are derived from the MAU sheet's audience base."),
+            ("dependency", "MAU & Operating Metrics.mau", "Subscriber-state and subscription revenue are derived from the MAU & Operating Metrics sheet's audience base."),
         ],
     )
     ads_preamble, ads_refs = _sheet_assumption_block(
-        "Ads Assumptions",
+        "Advertising Assumptions",
         "Inputs used by the ad revenue projection below.",
         [
             ("projection_months", assumptions.projection_months, "Number of projected monthly rows in the workbook model."),
@@ -352,16 +371,160 @@ def write_projection_workbook(
             ("ad_action_rate_per_pageview", assumptions.ad_action_rate_per_pageview, "Share of pageviews that convert into a CPA-qualified action."),
             ("ad_cpa_usd", assumptions.ad_cpa_usd, "CPA payout in USD for each modeled ad action."),
             ("jitter_std", assumptions.jitter_std, "Standard deviation used by the random-driver formulas."),
-            ("dependency", "MAU.mau", "Ad calculations are derived from MAU, sessions, and pageviews."),
+            ("dependency", "MAU & Operating Metrics.mau", "Ad calculations are derived from MAU & Operating Metrics, sessions, and pageviews."),
         ],
     )
+    expenses_preamble, expenses_refs = _sheet_assumption_block(
+        "OpEx Assumptions",
+        "Inputs used by the top-line expense model below.",
+        [
+            ("projection_months", assumptions.projection_months, "Number of projected monthly rows in the workbook model."),
+            ("projection_start_month", assumptions.projection_start_month, "First month of the synthetic projection in YYYY-MM format."),
+            ("dependency", "MAU & Operating Metrics.mau / MAU & Operating Metrics.new_users / Advertising.pageviews", "The finance-facing expense table uses audience and traffic plus the cloud-cost helper section below."),
+            ("instagram_marketing_monthly_year1", assumptions.instagram_marketing_monthly_year1, "Monthly Instagram paid-marketing budget in Year 1."),
+            ("instagram_marketing_monthly_year2", assumptions.instagram_marketing_monthly_year2, "Monthly Instagram paid-marketing budget in Year 2."),
+            ("instagram_marketing_monthly_year3", assumptions.instagram_marketing_monthly_year3, "Monthly Instagram paid-marketing budget in Year 3."),
+            ("twitter_marketing_monthly_year1", assumptions.twitter_marketing_monthly_year1, "Monthly Twitter/X paid-marketing budget in Year 1."),
+            ("twitter_marketing_monthly_year2", assumptions.twitter_marketing_monthly_year2, "Monthly Twitter/X paid-marketing budget in Year 2."),
+            ("twitter_marketing_monthly_year3", assumptions.twitter_marketing_monthly_year3, "Monthly Twitter/X paid-marketing budget in Year 3."),
+            ("facebook_marketing_monthly_year1", assumptions.facebook_marketing_monthly_year1, "Monthly Facebook paid-marketing budget in Year 1."),
+            ("facebook_marketing_monthly_year2", assumptions.facebook_marketing_monthly_year2, "Monthly Facebook paid-marketing budget in Year 2."),
+            ("facebook_marketing_monthly_year3", assumptions.facebook_marketing_monthly_year3, "Monthly Facebook paid-marketing budget in Year 3."),
+            ("content_creation_monthly_year1", assumptions.content_creation_monthly_year1, "Monthly content-creation and graphics budget in Year 1."),
+            ("content_creation_monthly_year2", assumptions.content_creation_monthly_year2, "Monthly content-creation and graphics budget in Year 2."),
+            ("content_creation_monthly_year3", assumptions.content_creation_monthly_year3, "Monthly content-creation and graphics budget in Year 3."),
+            ("team_size_year1", assumptions.team_size_year1, "Team size in Year 1, used only to size software tools."),
+            ("team_size_year2", assumptions.team_size_year2, "Team size in Year 2, used only to size software tools."),
+            ("team_size_year3", assumptions.team_size_year3, "Team size in Year 3, used only to size software tools."),
+            ("software_tools_per_team_member_monthly_usd", assumptions.software_tools_per_team_member_monthly_usd, "Combined Google Workspace and Slack cost per team member per month in USD."),
+            ("incorporation_setup_usd", assumptions.incorporation_setup_usd, "One-time incorporation and setup cost in USD, applied in the first projected month."),
+        ],
+    )
+    expenses_cloud_specs = [
+        ("r2_storage_start_gb", assumptions.r2_storage_start_gb, "Opening R2 storage footprint in GB."),
+        ("r2_storage_target_end_gb", assumptions.r2_storage_target_end_gb, "Target R2 storage footprint by the end of the model in GB."),
+        ("r2_storage_price_per_gb_month", assumptions.r2_storage_price_per_gb_month, "Cloudflare R2 storage price in USD per GB-month."),
+        ("r2_storage_free_gb", assumptions.r2_storage_free_gb, "Free R2 storage included each month in GB."),
+        ("r2_class_a_ops_per_new_user", assumptions.r2_class_a_ops_per_new_user, "Estimated write/list operations generated by each new user."),
+        ("r2_class_a_price_per_million", assumptions.r2_class_a_price_per_million, "Cloudflare R2 Class A request price in USD per million operations."),
+        ("r2_class_b_ops_per_pageview", assumptions.r2_class_b_ops_per_pageview, "Estimated read/get operations generated by each pageview."),
+        ("r2_class_b_price_per_million", assumptions.r2_class_b_price_per_million, "Cloudflare R2 Class B request price in USD per million operations."),
+        ("postgres_base_plan_monthly_usd", assumptions.postgres_base_plan_monthly_usd, "Managed Postgres platform plan cost in USD per month."),
+        ("postgres_micro_compute_monthly_usd", assumptions.postgres_micro_compute_monthly_usd, "Managed Postgres micro compute cost in USD per month."),
+        ("postgres_small_compute_monthly_usd", assumptions.postgres_small_compute_monthly_usd, "Managed Postgres small compute cost in USD per month."),
+        ("postgres_medium_compute_monthly_usd", assumptions.postgres_medium_compute_monthly_usd, "Managed Postgres medium compute cost in USD per month."),
+        ("postgres_small_mau_threshold", assumptions.postgres_small_mau_threshold, "MAU threshold for scaling Postgres from micro to small compute."),
+        ("postgres_medium_mau_threshold", assumptions.postgres_medium_mau_threshold, "MAU threshold for scaling Postgres from small to medium compute."),
+        ("postgres_read_replica_mau_threshold", assumptions.postgres_read_replica_mau_threshold, "MAU threshold for enabling one read-only replica. Defaults high enough that no replica is used in the current scenario."),
+        ("postgres_disk_base_gb", assumptions.postgres_disk_base_gb, "Included Postgres disk before overage pricing in GB."),
+        ("postgres_disk_gb_per_1000_cumulative_new_users", assumptions.postgres_disk_gb_per_1000_cumulative_new_users, "Estimated Postgres disk growth per 1,000 cumulative new users in GB."),
+        ("postgres_disk_price_per_gb_month", assumptions.postgres_disk_price_per_gb_month, "Managed Postgres disk overage price in USD per GB-month."),
+        ("cloudflare_pages_monthly_usd", assumptions.cloudflare_pages_monthly_usd, "Monthly Cloudflare Pages hosting cost in USD."),
+        ("workers_base_monthly_usd", assumptions.workers_base_monthly_usd, "Base Cloudflare Workers paid-plan cost in USD per month."),
+        ("workers_included_requests_millions", assumptions.workers_included_requests_millions, "Workers request allowance included each month in millions."),
+        ("workers_request_price_per_million", assumptions.workers_request_price_per_million, "Workers request overage price in USD per million requests."),
+        ("workers_included_cpu_million_ms", assumptions.workers_included_cpu_million_ms, "Workers CPU allowance included each month in million milliseconds."),
+        ("workers_cpu_price_per_million_ms", assumptions.workers_cpu_price_per_million_ms, "Workers CPU overage price in USD per million milliseconds."),
+        ("workers_requests_per_pageview", assumptions.workers_requests_per_pageview, "Estimated backend requests generated by each pageview."),
+        ("workers_requests_per_new_user", assumptions.workers_requests_per_new_user, "Estimated backend requests generated by each new user."),
+        ("workers_avg_cpu_ms_per_request", assumptions.workers_avg_cpu_ms_per_request, "Average CPU time consumed per backend request in milliseconds."),
+        ("transactional_email_monthly_usd", assumptions.transactional_email_monthly_usd, "Flat monthly transactional email SaaS cost in USD."),
+        ("scraper_proxy_monthly_usd", assumptions.scraper_proxy_monthly_usd, "Monthly static residential/ISP proxy budget in USD."),
+    ]
 
     marketplace_data_start = len(marketplace_preamble) + 2
     mau_data_start = len(mau_preamble) + 2
     subscriptions_data_start = len(subscriptions_preamble) + 2
     ads_data_start = len(ads_preamble) + 2
+    expenses_data_start = len(expenses_preamble) + 2
 
     marketplace_rows = marketplace_preamble + [[
+        Cell.string("month"),
+        Cell.string("year_index"),
+        Cell.string("phase"),
+        Cell.string("transaction_count"),
+        Cell.string("avg_sell_price_growth"),
+        Cell.string("avg_sell_price_usd"),
+        Cell.string("gross_market_value_usd"),
+        Cell.string("take_rate"),
+        Cell.string("transaction_fee_revenue_usd"),
+    ]]
+    marketplace_main_data_start = marketplace_data_start
+    marketplace_main_last_row = marketplace_main_data_start + projection_months - 1
+    marketplace_helper_title_row = marketplace_main_last_row + 2
+    marketplace_helper_header_row = marketplace_helper_title_row + 1
+    marketplace_helper_data_start = marketplace_helper_header_row + 1
+    for offset, row in enumerate(marketplace_fee_rows):
+        index = marketplace_main_data_start + offset
+        helper_index = marketplace_helper_data_start + offset
+        year_ref = f"$B{index}"
+        helper_txn_noise_ref = f"F{helper_index}"
+        helper_avg_sell_price_noise_ref = f"G{helper_index}"
+        helper_txns_base_ref = f"J{helper_index}"
+        helper_txns_seasonality_ref = f"K{helper_index}"
+        txns_ref = f"D{index}"
+        avg_sell_price_growth_ref = f"E{index}"
+        avg_sell_price_ref = f"F{index}"
+        gmv_ref = f"G{index}"
+        take_rate_ref = f"H{index}"
+        projection_offset = offset - 12
+        year_index = int(row["year_index"])
+        avg_sell_price_growth = (
+            0.0
+            if year_index == 1
+            else 1 + (assumptions.avg_sell_price_annual_growth * projection_offset / 12)
+        )
+        marketplace_rows.append(
+            [
+                Cell.string(str(row["month"])),
+                Cell.number(year_index),
+                Cell.string(str(row["phase"])),
+                Cell.formula_number(
+                    formula=(
+                        f"IF({year_ref}=1,0,"
+                        f"MIN({marketplace_refs['year2_3_max_txns']},"
+                        f"MAX({marketplace_refs['year2_3_min_txns']},"
+                        f"ROUND({helper_txns_base_ref}*{helper_txns_seasonality_ref}*{helper_txn_noise_ref},0))))"
+                    ),
+                    cached_value=float(row["transaction_count"]),
+                ),
+                Cell.formula_number(
+                    formula=(
+                        f"IF({year_ref}=1,0,"
+                        f"1+({marketplace_refs['avg_sell_price_annual_growth']}*{projection_offset}/12))"
+                    ),
+                    cached_value=avg_sell_price_growth,
+                ),
+                Cell.formula_number(
+                    formula=(
+                        f"IF({year_ref}=1,0,"
+                        f"ROUND({marketplace_refs['baseline_month_avg_sell_price_usd']}*"
+                        f"{avg_sell_price_growth_ref}*"
+                        f"{helper_avg_sell_price_noise_ref},2))"
+                    ),
+                    cached_value=float(row["avg_sell_price_usd"]),
+                ),
+                Cell.formula_number(
+                    formula=f"ROUND({txns_ref}*{avg_sell_price_ref},2)",
+                    cached_value=float(row["gross_market_value_usd"]),
+                ),
+                Cell.formula_number(
+                    formula=marketplace_refs["take_rate"],
+                    cached_value=float(row["take_rate"]),
+                ),
+                Cell.formula_number(
+                    formula=f"ROUND(IF({txns_ref}>0,{gmv_ref}*{take_rate_ref},0),2)",
+                    cached_value=float(row["transaction_fee_revenue_usd"]),
+                ),
+            ]
+        )
+    marketplace_rows.append([Cell.string("") for _ in range(11)])
+    marketplace_rows.append([
+        Cell.string("[Implementation Factors]"),
+        Cell.string(""),
+        Cell.string("Seasonality and noise factors used by the finance-facing table above."),
+    ])
+    marketplace_rows.append([
         Cell.string("month"),
         Cell.string("year_index"),
         Cell.string("phase"),
@@ -373,44 +536,28 @@ def write_projection_workbook(
         Cell.string("noise_market_combined"),
         Cell.string("txn_trend_base"),
         Cell.string("txn_seasonality_multiplier"),
-        Cell.string("transaction_count"),
-        Cell.string("avg_sell_price_growth"),
-        Cell.string("avg_sell_price_usd"),
-        Cell.string("gross_market_value_usd"),
-        Cell.string("take_rate"),
-        Cell.string("transaction_fee_revenue_usd"),
-    ]]
+    ])
     for offset, row in enumerate(marketplace_fee_rows):
-        index = marketplace_data_start + offset
-        year_ref = f"$B{index}"
-        seasonality_ref = f"D{index}"
-        year1_jitter_ref = f"E{index}"
-        txn_noise_ref = f"F{index}"
-        avg_sell_price_noise_ref = f"G{index}"
-        txns_base_ref = f"J{index}"
-        txns_seasonality_ref = f"K{index}"
-        txns_ref = f"L{index}"
-        avg_sell_price_growth_ref = f"M{index}"
-        avg_sell_price_ref = f"N{index}"
-        gmv_ref = f"O{index}"
-        take_rate_ref = f"P{index}"
-        progress_offset = offset
-        projection_offset = progress_offset - 12
+        helper_index = marketplace_helper_data_start + offset
+        helper_year_ref = f"$B{helper_index}"
+        helper_seasonality_ref = f"D{helper_index}"
+        helper_year1_jitter_ref = f"E{helper_index}"
+        helper_txn_noise_ref = f"F{helper_index}"
+        helper_avg_sell_price_noise_ref = f"G{helper_index}"
         month_text = str(row["month"])
         month_number = int(month_text[5:7])
         year_index = int(row["year_index"])
         seasonality_factor = normalized_monthly_factors[month_number]
+        projection_offset = offset - 12
         if year_index == 1:
             txn_trend_base = 0.0
             txn_seasonality_multiplier = 0.0
-            avg_sell_price_growth = 0.0
         else:
             ramp_progress = projection_offset / 23
             txn_trend_base = assumptions.year2_3_min_txns + (
                 assumptions.year2_3_max_txns - assumptions.year2_3_min_txns
             ) * ramp_progress
             txn_seasonality_multiplier = 0.85 + 0.15 * seasonality_factor
-            avg_sell_price_growth = 1 + (assumptions.avg_sell_price_annual_growth * projection_offset / 12)
         marketplace_rows.append(
             [
                 Cell.string(month_text),
@@ -430,61 +577,24 @@ def write_projection_workbook(
                     cached_value=market_driver_rows[offset]["noise_market_avg_sell_price"],
                 ),
                 Cell.formula_number(
-                    formula=f"IF({year_ref}=1,1,POWER(1+{marketplace_refs['sales_cagr']},{projection_offset}/12))",
+                    formula=f"IF({helper_year_ref}=1,1,POWER(1+{marketplace_refs['sales_cagr']},{projection_offset}/12))",
                     cached_value=float(row["cagr_multiplier"]),
                 ),
                 Cell.formula_number(
-                    formula=f"IF({year_ref}=1,{year1_jitter_ref},{txn_noise_ref}*{avg_sell_price_noise_ref})",
+                    formula=f"IF({helper_year_ref}=1,{helper_year1_jitter_ref},{helper_txn_noise_ref}*{helper_avg_sell_price_noise_ref})",
                     cached_value=float(row["noise_market_combined"]),
                 ),
                 Cell.formula_number(
                     formula=(
-                        f"IF({year_ref}=1,0,"
+                        f"IF({helper_year_ref}=1,0,"
                         f"{marketplace_refs['year2_3_min_txns']}+"
                         f"({marketplace_refs['year2_3_max_txns']}-{marketplace_refs['year2_3_min_txns']})*({projection_offset}/23))"
                     ),
                     cached_value=txn_trend_base,
                 ),
                 Cell.formula_number(
-                    formula=f"IF({year_ref}=1,0,0.85+0.15*{seasonality_ref})",
+                    formula=f"IF({helper_year_ref}=1,0,0.85+0.15*{helper_seasonality_ref})",
                     cached_value=txn_seasonality_multiplier,
-                ),
-                Cell.formula_number(
-                    formula=(
-                        f"IF({year_ref}=1,0,"
-                        f"MIN({marketplace_refs['year2_3_max_txns']},"
-                        f"MAX({marketplace_refs['year2_3_min_txns']},"
-                        f"ROUND({txns_base_ref}*{txns_seasonality_ref}*{txn_noise_ref},0))))"
-                    ),
-                    cached_value=float(row["transaction_count"]),
-                ),
-                Cell.formula_number(
-                    formula=(
-                        f"IF({year_ref}=1,0,"
-                        f"1+({marketplace_refs['avg_sell_price_annual_growth']}*{projection_offset}/12))"
-                    ),
-                    cached_value=avg_sell_price_growth,
-                ),
-                Cell.formula_number(
-                    formula=(
-                        f"IF({year_ref}=1,0,"
-                        f"ROUND({marketplace_refs['baseline_month_avg_sell_price_usd']}*"
-                        f"{avg_sell_price_growth_ref}*"
-                        f"{avg_sell_price_noise_ref},2))"
-                    ),
-                    cached_value=float(row["avg_sell_price_usd"]),
-                ),
-                Cell.formula_number(
-                    formula=f"ROUND({txns_ref}*{avg_sell_price_ref},2)",
-                    cached_value=float(row["gross_market_value_usd"]),
-                ),
-                Cell.formula_number(
-                    formula=marketplace_refs["take_rate"],
-                    cached_value=float(row["take_rate"]),
-                ),
-                Cell.formula_number(
-                    formula=f"ROUND(IF({txns_ref}>0,{gmv_ref}*{take_rate_ref},0),2)",
-                    cached_value=float(row["transaction_fee_revenue_usd"]),
                 ),
             ]
         )
@@ -596,7 +706,7 @@ def write_projection_workbook(
                         f"IF(${_col_name(retention_age_col)}{index}=1,{mau_refs['user_retention_month_1']},"
                         f"IF(${_col_name(retention_age_col)}{index}=2,{mau_refs['user_retention_month_2']},"
                         f"IF(${_col_name(retention_age_col)}{index}=3,{mau_refs['user_retention_month_3']},"
-                        f"{mau_refs['user_retention_month_3']}*POWER({mau_refs['user_retention_decay']},${_col_name(retention_age_col)}{index}-3))))"
+                        f"{mau_refs['user_retention_month_3']}*POWER({mau_refs['user_retention_decay']},${_col_name(retention_age_col)}{index}-3)))))"
                     ),
                     cached_value=_retained_share_value(offset),
                 ),
@@ -753,14 +863,600 @@ def write_projection_workbook(
             ]
         )
 
+    expense_total_new_users = max(1.0, sum(float(row["new_users"]) for row in mau_rows))
+    expense_summary_header = [
+        Cell.string("month"),
+        Cell.string("year_index"),
+        Cell.string("phase"),
+        Cell.string("technology_and_infrastructure_opex_usd"),
+        Cell.string("sales_and_marketing_opex_usd"),
+        Cell.string("general_and_administrative_opex_usd"),
+        Cell.string("total_operating_expenses_usd"),
+    ]
+    expense_detail_header = [
+        Cell.string("month"),
+        Cell.string("year_index"),
+        Cell.string("phase"),
+        Cell.string("total_cloud_costs"),
+        Cell.string("sales_marketing_cost_usd"),
+        Cell.string("software_tools_usd"),
+        Cell.string("non_payroll_overhead_cost_usd"),
+        Cell.string("total_expenses_usd"),
+    ]
+    expenses_summary_data_start = expenses_data_start
+    expenses_summary_last_row = expenses_summary_data_start + projection_months - 1
+    expenses_detail_title_row = expenses_summary_last_row + 2
+    expenses_detail_header_row = expenses_detail_title_row + 1
+    expenses_detail_data_start = expenses_detail_header_row + 1
+    expenses_detail_last_row = expenses_detail_data_start + projection_months - 1
+    expenses_cloud_assumptions_start = expenses_detail_last_row + 2
+    expenses_cloud_preamble, expenses_cloud_refs = _section_assumption_block_at(
+        expenses_cloud_assumptions_start,
+        "Cloud Cost Assumptions",
+        "Inputs used by the lower expense-detail and cloud-cost tables. The cloud-cost breakdown is implementation detail and is not needed in finance reports.",
+        expenses_cloud_specs,
+    )
+    expenses_helper_title_row = expenses_cloud_assumptions_start + len(expenses_cloud_preamble)
+    expenses_helper_header_row = expenses_helper_title_row + 1
+    expenses_helper_data_start = expenses_helper_header_row + 1
+    expense_summary_rows: list[list[Cell]] = []
+    expense_detail_rows: list[list[Cell]] = []
+    technology_opex_values: list[float] = []
+    sales_marketing_opex_values: list[float] = []
+    g_and_a_opex_values: list[float] = []
+    total_opex_values: list[float] = []
+    cumulative_new_users = 0.0
+    for offset, row in enumerate(mau_rows):
+        detail_index = expenses_detail_data_start + offset
+        helper_index = expenses_helper_data_start + offset
+        month_text = str(row["month"])
+        month_number = int(month_text[5:7])
+        holiday_marketing_active = month_number in (11, 12)
+        year_index = int(row["year_index"])
+        mau = float(row["mau"])
+        new_users = float(row["new_users"])
+        pageviews = float(ad_rows[offset]["pageviews"])
+        cumulative_new_users += new_users
+        if mau >= assumptions.postgres_medium_mau_threshold:
+            primary_compute_cost = assumptions.postgres_medium_compute_monthly_usd
+        elif mau >= assumptions.postgres_small_mau_threshold:
+            primary_compute_cost = assumptions.postgres_small_compute_monthly_usd
+        else:
+            primary_compute_cost = assumptions.postgres_micro_compute_monthly_usd
+        replica_compute_cost = (
+            primary_compute_cost
+            if mau >= assumptions.postgres_read_replica_mau_threshold
+            else 0.0
+        )
+        r2_storage_gb = assumptions.r2_storage_start_gb + cumulative_new_users * (
+            (assumptions.r2_storage_target_end_gb - assumptions.r2_storage_start_gb)
+            / expense_total_new_users
+        )
+        r2_storage_cost = round(
+            max(0.0, r2_storage_gb - assumptions.r2_storage_free_gb)
+            * assumptions.r2_storage_price_per_gb_month,
+            2,
+        )
+        r2_operation_cost = round(
+            (new_users * assumptions.r2_class_a_ops_per_new_user / 1_000_000)
+            * assumptions.r2_class_a_price_per_million
+            + (pageviews * assumptions.r2_class_b_ops_per_pageview / 1_000_000)
+            * assumptions.r2_class_b_price_per_million,
+            2,
+        )
+        postgres_compute_cost = round(
+            assumptions.postgres_base_plan_monthly_usd + primary_compute_cost,
+            2,
+        )
+        postgres_disk_gb = assumptions.postgres_disk_base_gb + (
+            cumulative_new_users / 1000
+        ) * assumptions.postgres_disk_gb_per_1000_cumulative_new_users
+        postgres_disk_cost = round(
+            max(0.0, postgres_disk_gb - assumptions.postgres_disk_base_gb)
+            * assumptions.postgres_disk_price_per_gb_month,
+            2,
+        )
+        postgres_cost = round(
+            postgres_compute_cost + postgres_disk_cost + replica_compute_cost,
+            2,
+        )
+        workers_requests_millions = round(
+            (
+                pageviews * assumptions.workers_requests_per_pageview
+                + new_users * assumptions.workers_requests_per_new_user
+            )
+            / 1_000_000,
+            4,
+        )
+        workers_cpu_million_ms = round(
+            workers_requests_millions * assumptions.workers_avg_cpu_ms_per_request,
+            4,
+        )
+        workers_cost = round(
+            assumptions.workers_base_monthly_usd
+            + max(
+                0.0,
+                workers_requests_millions
+                - assumptions.workers_included_requests_millions,
+            )
+            * assumptions.workers_request_price_per_million
+            + max(
+                0.0,
+                workers_cpu_million_ms - assumptions.workers_included_cpu_million_ms,
+            )
+            * assumptions.workers_cpu_price_per_million_ms,
+            2,
+        )
+        cloudflare_cost = round(
+            assumptions.cloudflare_pages_monthly_usd + workers_cost,
+            2,
+        )
+        transactional_email_cost = round(
+            assumptions.transactional_email_monthly_usd,
+            2,
+        )
+        object_storage_cost = round(r2_storage_cost + r2_operation_cost, 2)
+        database_cost = round(postgres_cost, 2)
+        cloud_storage_cost = round(r2_storage_cost + postgres_disk_cost, 2)
+        cloud_compute_cost = round(
+            r2_operation_cost
+            + postgres_compute_cost
+            + replica_compute_cost
+            + cloudflare_cost
+            + assumptions.scraper_proxy_monthly_usd
+            + transactional_email_cost,
+            2,
+        )
+        total_cloud_cost = round(cloud_compute_cost + cloud_storage_cost, 2)
+        if year_index == 1:
+            instagram_marketing = assumptions.instagram_marketing_monthly_year1 if holiday_marketing_active else 0.0
+            twitter_marketing = assumptions.twitter_marketing_monthly_year1 if holiday_marketing_active else 0.0
+            facebook_marketing = assumptions.facebook_marketing_monthly_year1 if holiday_marketing_active else 0.0
+            content_creation = assumptions.content_creation_monthly_year1 if holiday_marketing_active else 0.0
+            team_size = assumptions.team_size_year1
+        elif year_index == 2:
+            instagram_marketing = assumptions.instagram_marketing_monthly_year2 if holiday_marketing_active else 0.0
+            twitter_marketing = assumptions.twitter_marketing_monthly_year2 if holiday_marketing_active else 0.0
+            facebook_marketing = assumptions.facebook_marketing_monthly_year2 if holiday_marketing_active else 0.0
+            content_creation = assumptions.content_creation_monthly_year2 if holiday_marketing_active else 0.0
+            team_size = assumptions.team_size_year2
+        else:
+            instagram_marketing = assumptions.instagram_marketing_monthly_year3 if holiday_marketing_active else 0.0
+            twitter_marketing = assumptions.twitter_marketing_monthly_year3 if holiday_marketing_active else 0.0
+            facebook_marketing = assumptions.facebook_marketing_monthly_year3 if holiday_marketing_active else 0.0
+            content_creation = assumptions.content_creation_monthly_year3 if holiday_marketing_active else 0.0
+            team_size = assumptions.team_size_year3
+        sales_marketing_cost = round(
+            instagram_marketing
+            + twitter_marketing
+            + facebook_marketing
+            + content_creation,
+            2,
+        )
+        software_tools_cost = round(
+            team_size * assumptions.software_tools_per_team_member_monthly_usd,
+            2,
+        )
+        incorporation_cost = assumptions.incorporation_setup_usd if offset == 0 else 0.0
+        non_payroll_overhead_cost = round(
+            software_tools_cost + incorporation_cost,
+            2,
+        )
+        total_expenses = round(
+            total_cloud_cost + sales_marketing_cost + non_payroll_overhead_cost,
+            2,
+        )
+        helper_total_cloud_ref = f"K{helper_index}"
+        technology_opex_values.append(total_cloud_cost)
+        sales_marketing_opex_values.append(sales_marketing_cost)
+        g_and_a_opex_values.append(non_payroll_overhead_cost)
+        total_opex_values.append(total_expenses)
+        expense_summary_rows.append(
+            [
+                Cell.string(month_text),
+                Cell.number(year_index),
+                Cell.string(str(row["phase"])),
+                Cell.formula_number(
+                    formula=f"D{detail_index}",
+                    cached_value=total_cloud_cost,
+                ),
+                Cell.formula_number(
+                    formula=f"E{detail_index}",
+                    cached_value=sales_marketing_cost,
+                ),
+                Cell.formula_number(
+                    formula=f"G{detail_index}",
+                    cached_value=non_payroll_overhead_cost,
+                ),
+                Cell.formula_number(
+                    formula=f"H{detail_index}",
+                    cached_value=total_expenses,
+                ),
+            ]
+        )
+        expense_detail_rows.append(
+            [
+                Cell.string(month_text),
+                Cell.number(year_index),
+                Cell.string(str(row["phase"])),
+                Cell.formula_number(
+                    formula=helper_total_cloud_ref,
+                    cached_value=total_cloud_cost,
+                ),
+                Cell.formula_number(
+                    formula=(
+                        f"IF(OR(MID($A{detail_index},6,2)=\"11\",MID($A{detail_index},6,2)=\"12\"),"
+                        f"IF(B{detail_index}=1,{expenses_refs['instagram_marketing_monthly_year1']},"
+                        f"IF(B{detail_index}=2,{expenses_refs['instagram_marketing_monthly_year2']},"
+                        f"{expenses_refs['instagram_marketing_monthly_year3']})),0)+"
+                        f"IF(OR(MID($A{detail_index},6,2)=\"11\",MID($A{detail_index},6,2)=\"12\"),"
+                        f"IF(B{detail_index}=1,{expenses_refs['twitter_marketing_monthly_year1']},"
+                        f"IF(B{detail_index}=2,{expenses_refs['twitter_marketing_monthly_year2']},"
+                        f"{expenses_refs['twitter_marketing_monthly_year3']})),0)+"
+                        f"IF(OR(MID($A{detail_index},6,2)=\"11\",MID($A{detail_index},6,2)=\"12\"),"
+                        f"IF(B{detail_index}=1,{expenses_refs['facebook_marketing_monthly_year1']},"
+                        f"IF(B{detail_index}=2,{expenses_refs['facebook_marketing_monthly_year2']},"
+                        f"{expenses_refs['facebook_marketing_monthly_year3']})),0)+"
+                        f"IF(OR(MID($A{detail_index},6,2)=\"11\",MID($A{detail_index},6,2)=\"12\"),"
+                        f"IF(B{detail_index}=1,{expenses_refs['content_creation_monthly_year1']},"
+                        f"IF(B{detail_index}=2,{expenses_refs['content_creation_monthly_year2']},"
+                        f"{expenses_refs['content_creation_monthly_year3']})),0)"
+                    ),
+                    cached_value=sales_marketing_cost,
+                ),
+                Cell.formula_number(
+                    formula=(
+                        f"ROUND((IF(B{detail_index}=1,{expenses_refs['team_size_year1']},"
+                        f"IF(B{detail_index}=2,{expenses_refs['team_size_year2']},"
+                        f"{expenses_refs['team_size_year3']})))*"
+                        f"{expenses_refs['software_tools_per_team_member_monthly_usd']},2)"
+                    ),
+                    cached_value=software_tools_cost,
+                ),
+                Cell.formula_number(
+                    formula=(
+                        f"ROUND(F{detail_index}+{expenses_refs['incorporation_setup_usd']},2)"
+                        if offset == 0
+                        else f"ROUND(F{detail_index},2)"
+                    ),
+                    cached_value=non_payroll_overhead_cost,
+                ),
+                Cell.formula_number(
+                    formula=f"ROUND(D{detail_index}+E{detail_index}+G{detail_index},2)",
+                    cached_value=total_expenses,
+                ),
+            ]
+        )
+
+    expense_sheet_rows = expenses_preamble + [expense_summary_header]
+    expense_sheet_rows.extend(expense_summary_rows)
+    expense_sheet_rows.append([Cell.string("") for _ in range(7)])
+    expense_sheet_rows.append([
+        Cell.string("[Expense Detail]"),
+        Cell.string(""),
+        Cell.string("Underlying operating-expense detail that rolls up into the PE-style summary table above."),
+    ])
+    expense_sheet_rows.append(expense_detail_header)
+    expense_sheet_rows.extend(expense_detail_rows)
+    expense_sheet_rows.append([Cell.string("") for _ in range(8)])
+    expense_sheet_rows.extend(expenses_cloud_preamble)
+    expense_sheet_rows.append([
+        Cell.string("[Cloud Cost Factors]"),
+        Cell.string(""),
+        Cell.string("Extra cloud-cost breakdown used for model transparency. It is implementation detail and is not needed in finance reports."),
+    ])
+    expense_sheet_rows.append([
+        Cell.string("month"),
+        Cell.string("year_index"),
+        Cell.string("phase"),
+        Cell.string("object_storage_costs"),
+        Cell.string("database_costs"),
+        Cell.string("cloudflare_costs"),
+        Cell.string("scraper_proxy_cost_usd"),
+        Cell.string("transactional_email_cost_usd"),
+        Cell.string("cloud_compute_costs"),
+        Cell.string("cloud_storage_costs"),
+        Cell.string("total_cloud_costs"),
+    ])
+    cumulative_new_users = 0.0
+    for offset, row in enumerate(mau_rows):
+        helper_index = expenses_helper_data_start + offset
+        month_text = str(row["month"])
+        year_index = int(row["year_index"])
+        mau = float(row["mau"])
+        new_users = float(row["new_users"])
+        pageviews = float(ad_rows[offset]["pageviews"])
+        cumulative_new_users += new_users
+        if mau >= assumptions.postgres_medium_mau_threshold:
+            primary_compute_cost = assumptions.postgres_medium_compute_monthly_usd
+        elif mau >= assumptions.postgres_small_mau_threshold:
+            primary_compute_cost = assumptions.postgres_small_compute_monthly_usd
+        else:
+            primary_compute_cost = assumptions.postgres_micro_compute_monthly_usd
+        replica_compute_cost = (
+            primary_compute_cost
+            if mau >= assumptions.postgres_read_replica_mau_threshold
+            else 0.0
+        )
+        r2_storage_gb = assumptions.r2_storage_start_gb + cumulative_new_users * (
+            (assumptions.r2_storage_target_end_gb - assumptions.r2_storage_start_gb)
+            / expense_total_new_users
+        )
+        r2_storage_cost = round(
+            max(0.0, r2_storage_gb - assumptions.r2_storage_free_gb)
+            * assumptions.r2_storage_price_per_gb_month,
+            2,
+        )
+        r2_operation_cost = round(
+            (new_users * assumptions.r2_class_a_ops_per_new_user / 1_000_000)
+            * assumptions.r2_class_a_price_per_million
+            + (pageviews * assumptions.r2_class_b_ops_per_pageview / 1_000_000)
+            * assumptions.r2_class_b_price_per_million,
+            2,
+        )
+        postgres_compute_cost = round(
+            assumptions.postgres_base_plan_monthly_usd + primary_compute_cost,
+            2,
+        )
+        postgres_disk_gb = assumptions.postgres_disk_base_gb + (
+            cumulative_new_users / 1000
+        ) * assumptions.postgres_disk_gb_per_1000_cumulative_new_users
+        postgres_disk_cost = round(
+            max(0.0, postgres_disk_gb - assumptions.postgres_disk_base_gb)
+            * assumptions.postgres_disk_price_per_gb_month,
+            2,
+        )
+        postgres_cost = round(
+            postgres_compute_cost + postgres_disk_cost + replica_compute_cost,
+            2,
+        )
+        workers_requests_millions = round(
+            (
+                pageviews * assumptions.workers_requests_per_pageview
+                + new_users * assumptions.workers_requests_per_new_user
+            )
+            / 1_000_000,
+            4,
+        )
+        workers_cpu_million_ms = round(
+            workers_requests_millions * assumptions.workers_avg_cpu_ms_per_request,
+            4,
+        )
+        workers_cost = round(
+            assumptions.workers_base_monthly_usd
+            + max(
+                0.0,
+                workers_requests_millions
+                - assumptions.workers_included_requests_millions,
+            )
+            * assumptions.workers_request_price_per_million
+            + max(
+                0.0,
+                workers_cpu_million_ms - assumptions.workers_included_cpu_million_ms,
+            )
+            * assumptions.workers_cpu_price_per_million_ms,
+            2,
+        )
+        cloudflare_cost = round(
+            assumptions.cloudflare_pages_monthly_usd + workers_cost,
+            2,
+        )
+        transactional_email_cost = round(
+            assumptions.transactional_email_monthly_usd,
+            2,
+        )
+        object_storage_cost = round(r2_storage_cost + r2_operation_cost, 2)
+        database_cost = round(postgres_cost, 2)
+        cloud_storage_cost = round(r2_storage_cost + postgres_disk_cost, 2)
+        cloud_compute_cost = round(
+            r2_operation_cost
+            + postgres_compute_cost
+            + replica_compute_cost
+            + cloudflare_cost
+            + assumptions.scraper_proxy_monthly_usd
+            + transactional_email_cost,
+            2,
+        )
+        total_cloud_cost = round(cloud_compute_cost + cloud_storage_cost, 2)
+        expense_sheet_rows.append(
+            [
+                Cell.string(month_text),
+                Cell.number(year_index),
+                Cell.string(str(row["phase"])),
+                Cell.formula_number(
+                    formula=(
+                        f"ROUND(MAX(0,("
+                        f"{expenses_cloud_refs['r2_storage_start_gb']}+"
+                        f"SUM('{SHEET_MAU}'!$D${mau_data_start}:'{SHEET_MAU}'!$D${mau_data_start + offset})*"
+                        f"(({expenses_cloud_refs['r2_storage_target_end_gb']}-{expenses_cloud_refs['r2_storage_start_gb']})/"
+                        f"MAX(1,SUM('{SHEET_MAU}'!$D${mau_data_start}:'{SHEET_MAU}'!$D${mau_data_start + projection_months - 1})))"
+                        f")-{expenses_cloud_refs['r2_storage_free_gb']})*{expenses_cloud_refs['r2_storage_price_per_gb_month']}+"
+                        f"('{SHEET_MAU}'!$D${mau_data_start + offset}*{expenses_cloud_refs['r2_class_a_ops_per_new_user']}/1000000)*{expenses_cloud_refs['r2_class_a_price_per_million']}+"
+                        f"('{SHEET_ADS}'!$G${ads_data_start + offset}*{expenses_cloud_refs['r2_class_b_ops_per_pageview']}/1000000)*{expenses_cloud_refs['r2_class_b_price_per_million']},2)"
+                    ),
+                    cached_value=object_storage_cost,
+                ),
+                Cell.formula_number(
+                    formula=(
+                        f"ROUND(("
+                        f"{expenses_cloud_refs['postgres_base_plan_monthly_usd']}+"
+                        f"IF('{SHEET_MAU}'!$F${mau_data_start + offset}>={expenses_cloud_refs['postgres_medium_mau_threshold']},"
+                        f"{expenses_cloud_refs['postgres_medium_compute_monthly_usd']},"
+                        f"IF('{SHEET_MAU}'!$F${mau_data_start + offset}>={expenses_cloud_refs['postgres_small_mau_threshold']},"
+                        f"{expenses_cloud_refs['postgres_small_compute_monthly_usd']},"
+                        f"{expenses_cloud_refs['postgres_micro_compute_monthly_usd']})))+"
+                        f"MAX(0,("
+                        f"{expenses_cloud_refs['postgres_disk_base_gb']}+"
+                        f"SUM('{SHEET_MAU}'!$D${mau_data_start}:'{SHEET_MAU}'!$D${mau_data_start + offset})/1000*{expenses_cloud_refs['postgres_disk_gb_per_1000_cumulative_new_users']}"
+                        f")-{expenses_cloud_refs['postgres_disk_base_gb']})*{expenses_cloud_refs['postgres_disk_price_per_gb_month']}+"
+                        f"IF('{SHEET_MAU}'!$F${mau_data_start + offset}>={expenses_cloud_refs['postgres_read_replica_mau_threshold']},"
+                        f"IF('{SHEET_MAU}'!$F${mau_data_start + offset}>={expenses_cloud_refs['postgres_medium_mau_threshold']},"
+                        f"{expenses_cloud_refs['postgres_medium_compute_monthly_usd']},"
+                        f"IF('{SHEET_MAU}'!$F${mau_data_start + offset}>={expenses_cloud_refs['postgres_small_mau_threshold']},"
+                        f"{expenses_cloud_refs['postgres_small_compute_monthly_usd']},"
+                        f"{expenses_cloud_refs['postgres_micro_compute_monthly_usd']})),0),2)"
+                    ),
+                    cached_value=database_cost,
+                ),
+                Cell.formula_number(
+                    formula=(
+                        f"ROUND({expenses_cloud_refs['cloudflare_pages_monthly_usd']}+"
+                        f"ROUND({expenses_cloud_refs['workers_base_monthly_usd']}+"
+                        f"MAX(0,(('{SHEET_ADS}'!$G${ads_data_start + offset}*{expenses_cloud_refs['workers_requests_per_pageview']}+"
+                        f"'{SHEET_MAU}'!$D${mau_data_start + offset}*{expenses_cloud_refs['workers_requests_per_new_user']})/1000000)-{expenses_cloud_refs['workers_included_requests_millions']})*"
+                        f"{expenses_cloud_refs['workers_request_price_per_million']}+"
+                        f"MAX(0,(((('{SHEET_ADS}'!$G${ads_data_start + offset}*{expenses_cloud_refs['workers_requests_per_pageview']}+"
+                        f"'{SHEET_MAU}'!$D${mau_data_start + offset}*{expenses_cloud_refs['workers_requests_per_new_user']})/1000000)*{expenses_cloud_refs['workers_avg_cpu_ms_per_request']})-"
+                        f"{expenses_cloud_refs['workers_included_cpu_million_ms']}))*{expenses_cloud_refs['workers_cpu_price_per_million_ms']},2),2)"
+                    ),
+                    cached_value=cloudflare_cost,
+                ),
+                Cell.formula_number(
+                    formula=expenses_cloud_refs["scraper_proxy_monthly_usd"],
+                    cached_value=float(assumptions.scraper_proxy_monthly_usd),
+                ),
+                Cell.formula_number(
+                    formula=expenses_cloud_refs["transactional_email_monthly_usd"],
+                    cached_value=transactional_email_cost,
+                ),
+                Cell.formula_number(
+                    formula=f"ROUND(D{helper_index}+E{helper_index}+F{helper_index}+G{helper_index}+H{helper_index}-J{helper_index},2)",
+                    cached_value=cloud_compute_cost,
+                ),
+                Cell.formula_number(
+                    formula=(
+                        f"ROUND(MAX(0,("
+                        f"{expenses_cloud_refs['r2_storage_start_gb']}+"
+                        f"SUM('{SHEET_MAU}'!$D${mau_data_start}:'{SHEET_MAU}'!$D${mau_data_start + offset})*"
+                        f"(({expenses_cloud_refs['r2_storage_target_end_gb']}-{expenses_cloud_refs['r2_storage_start_gb']})/"
+                        f"MAX(1,SUM('{SHEET_MAU}'!$D${mau_data_start}:'{SHEET_MAU}'!$D${mau_data_start + projection_months - 1})))"
+                        f")-{expenses_cloud_refs['r2_storage_free_gb']})*{expenses_cloud_refs['r2_storage_price_per_gb_month']}+"
+                        f"MAX(0,("
+                        f"{expenses_cloud_refs['postgres_disk_base_gb']}+"
+                        f"SUM('{SHEET_MAU}'!$D${mau_data_start}:'{SHEET_MAU}'!$D${mau_data_start + offset})/1000*{expenses_cloud_refs['postgres_disk_gb_per_1000_cumulative_new_users']}"
+                        f")-{expenses_cloud_refs['postgres_disk_base_gb']})*{expenses_cloud_refs['postgres_disk_price_per_gb_month']},2)"
+                    ),
+                    cached_value=cloud_storage_cost,
+                ),
+                Cell.formula_number(
+                    formula=f"ROUND(I{helper_index}+J{helper_index},2)",
+                    cached_value=total_cloud_cost,
+                ),
+            ]
+        )
+    summary_month_dates = [date.fromisoformat(str(row["month"])) for row in marketplace_fee_rows]
+    summary_year_labels: list[Cell] = [Cell.string("")]
+    prior_year: int | None = None
+    for month_date in summary_month_dates:
+        year_label = str(month_date.year) if month_date.year != prior_year else ""
+        summary_year_labels.append(Cell.string(year_label))
+        prior_year = month_date.year
+    summary_month_labels = [Cell.string("month")] + [Cell.number(month_date.month) for month_date in summary_month_dates]
+    marketplace_revenue_values = [float(row["transaction_fee_revenue_usd"]) for row in marketplace_fee_rows]
+    subscription_revenue_values = [float(row["subscription_revenue_usd"]) for row in subscription_rows]
+    advertising_revenue_values = [float(row["ad_revenue_usd"]) for row in ad_rows]
+    total_revenue_values = [
+        round(marketplace_revenue_values[i] + subscription_revenue_values[i] + advertising_revenue_values[i], 2)
+        for i in range(projection_months)
+    ]
+    operating_profit_values = [
+        round(total_revenue_values[i] - total_opex_values[i], 2)
+        for i in range(projection_months)
+    ]
+
+    summary_rows: list[list[Cell]] = [
+        [
+            Cell.string("[Summary]"),
+            Cell.string(""),
+            Cell.string("36-month income statement style summary driven by the detailed revenue and OpEx tabs."),
+        ],
+        [Cell.string("")],
+        summary_year_labels,
+        summary_month_labels,
+    ]
+    summary_marketplace_row = 5
+    summary_subscription_row = 6
+    summary_advertising_row = 7
+    summary_total_revenue_row = 8
+    summary_technology_opex_row = 10
+    summary_sales_marketing_opex_row = 11
+    summary_g_and_a_opex_row = 12
+    summary_total_opex_row = 13
+    summary_operating_profit_row = 14
+
+    def _summary_formula_row(
+        label: str,
+        row_number: int,
+        formulas: list[str],
+        cached_values: list[float],
+    ) -> list[Cell]:
+        row_cells: list[Cell] = [Cell.string(label)]
+        for formula, cached_value in zip(formulas, cached_values):
+            row_cells.append(Cell.formula_number(formula=formula, cached_value=cached_value))
+        return row_cells
+
+    marketplace_formulas = [
+        f"'{SHEET_MARKETPLACE_FEES}'!$I${marketplace_data_start + offset}"
+        for offset in range(projection_months)
+    ]
+    subscription_formulas = [
+        f"'{SHEET_SUBSCRIPTIONS}'!$L${subscriptions_data_start + offset}"
+        for offset in range(projection_months)
+    ]
+    advertising_formulas = [
+        f"'{SHEET_ADS}'!$L${ads_data_start + offset}"
+        for offset in range(projection_months)
+    ]
+    technology_opex_formulas = [
+        f"'{SHEET_EXPENSES}'!$D${expenses_summary_data_start + offset}"
+        for offset in range(projection_months)
+    ]
+    sales_marketing_opex_formulas = [
+        f"'{SHEET_EXPENSES}'!$E${expenses_summary_data_start + offset}"
+        for offset in range(projection_months)
+    ]
+    g_and_a_opex_formulas = [
+        f"'{SHEET_EXPENSES}'!$F${expenses_summary_data_start + offset}"
+        for offset in range(projection_months)
+    ]
+    total_opex_formulas = [
+        f"'{SHEET_EXPENSES}'!$G${expenses_summary_data_start + offset}"
+        for offset in range(projection_months)
+    ]
+    total_revenue_formulas = [
+        f"ROUND(SUM({_cell_ref(month_col, summary_marketplace_row)}:{_cell_ref(month_col, summary_advertising_row)}),2)"
+        for month_col in range(2, projection_months + 2)
+    ]
+    operating_profit_formulas = [
+        f"ROUND({_cell_ref(month_col, summary_total_revenue_row)}-{_cell_ref(month_col, summary_total_opex_row)},2)"
+        for month_col in range(2, projection_months + 2)
+    ]
+
+    summary_rows.append(_summary_formula_row("Marketplace Revenue", summary_marketplace_row, marketplace_formulas, marketplace_revenue_values))
+    summary_rows.append(_summary_formula_row("Subscription Revenue", summary_subscription_row, subscription_formulas, subscription_revenue_values))
+    summary_rows.append(_summary_formula_row("Advertising Revenue", summary_advertising_row, advertising_formulas, advertising_revenue_values))
+    summary_rows.append(_summary_formula_row("Total Revenue", summary_total_revenue_row, total_revenue_formulas, total_revenue_values))
+    summary_rows.append([Cell.string("")])
+    summary_rows.append(_summary_formula_row("Technology & Infrastructure OpEx", summary_technology_opex_row, technology_opex_formulas, technology_opex_values))
+    summary_rows.append(_summary_formula_row("Sales & Marketing OpEx", summary_sales_marketing_opex_row, sales_marketing_opex_formulas, sales_marketing_opex_values))
+    summary_rows.append(_summary_formula_row("G&A OpEx", summary_g_and_a_opex_row, g_and_a_opex_formulas, g_and_a_opex_values))
+    summary_rows.append(_summary_formula_row("Total Operating Expenses", summary_total_opex_row, total_opex_formulas, total_opex_values))
+    summary_rows.append(_summary_formula_row("Operating Profit / (Loss)", summary_operating_profit_row, operating_profit_formulas, operating_profit_values))
+
     sheets = [
+        Sheet(SHEET_SUMMARY, summary_rows),
         Sheet(SHEET_MARKETPLACE_FEES, marketplace_rows),
         Sheet(SHEET_MAU, mau_sheet_rows),
         Sheet(SHEET_SUBSCRIPTIONS, subscription_sheet_rows),
         Sheet(SHEET_ADS, ad_sheet_rows),
+        Sheet(SHEET_EXPENSES, expense_sheet_rows),
     ]
 
-    with ZipFile(output_path, "w", compression=ZIP_DEFLATED) as archive:
+    temp_output_path = output_path.with_name(f".{output_path.name}.tmp")
+    if temp_output_path.exists():
+        temp_output_path.unlink()
+
+    with ZipFile(temp_output_path, "w", compression=ZIP_DEFLATED) as archive:
         archive.writestr("[Content_Types].xml", _content_types_xml(len(sheets)))
         archive.writestr("_rels/.rels", _root_rels_xml())
         archive.writestr("docProps/core.xml", _core_xml())
@@ -769,6 +1465,8 @@ def write_projection_workbook(
         archive.writestr("xl/_rels/workbook.xml.rels", _workbook_rels_xml(len(sheets)))
         for index, sheet in enumerate(sheets, start=1):
             archive.writestr(f"xl/worksheets/sheet{index}.xml", _sheet_xml(sheet))
+
+    temp_output_path.replace(output_path)
 
 
 def read_projection_sheet_rows(path: Path, sheet_name: str) -> list[dict[str, str]]:
@@ -834,6 +1532,11 @@ def read_projection_sheet_rows(path: Path, sheet_name: str) -> list[dict[str, st
             header: row_cells.get(column_index, "")
             for column_index, header in headers.items()
         }
-        if any(value != "" for value in record.values()):
-            output.append(record)
+        if not any(value != "" for value in record.values()):
+            if output:
+                break
+            continue
+        if row_cells.get(1, "") == "month":
+            break
+        output.append(record)
     return output

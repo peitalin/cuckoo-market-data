@@ -268,7 +268,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     _render_line_chart_svg(
         title="Synthetic Transaction Projection (36 Months)",
-        subtitle="Monthly transaction counts from workbook sheet MarketplaceFees",
+        subtitle="Monthly transaction counts from workbook sheet Marketplace Revenue",
         y_label="Transactions",
         y_formatter="count",
         months=months,
@@ -279,7 +279,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     _render_line_chart_svg(
         title="Synthetic Audience Projection (36 Months)",
-        subtitle="MAU from workbook sheet MAU and active subscribers from workbook sheet Subscriptions",
+        subtitle="MAU from workbook sheet MAU & Operating Metrics and active subscribers from workbook sheet Subscriptions",
         y_label="Users",
         y_formatter="count",
         months=months,

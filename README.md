@@ -12,7 +12,7 @@ python3 main.py bundle
 python3 main.py plot
 ```
 
-You can edit modelling assumptions in `pipeline/assumptions.py` for different audience and revenue figures
+You can edit modelling assumptions in `pipeline/assumptions.py` for different audience, revenue, and expense figures
 
 ## Outputs
 
