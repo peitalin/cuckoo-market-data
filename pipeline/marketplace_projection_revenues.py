@@ -315,12 +315,11 @@ def _build_transactions_rows(
     return rows
 
 
-def _build_subscription_rows(
+def _build_audience_rows(
     transactions_rows: list[dict[str, Any]],
     monthly_factors: dict[int, float],
     mau_start: float,
     mau_end: float,
-    subscription_price_usd: float,
     conversion_start: float,
     conversion_end: float,
     retention_start: float,
@@ -351,8 +350,6 @@ def _build_subscription_rows(
         active_subscribers = max(retained, target_subscribers)
         new_subscribers = max(0.0, active_subscribers - retained)
         churned_subscribers = max(0.0, active_subscribers_prev - retained)
-        revenue = active_subscribers * subscription_price_usd
-
         rows.append(
             {
                 "month": month_text,
@@ -364,8 +361,6 @@ def _build_subscription_rows(
                 "new_subscribers": int(round(new_subscribers)),
                 "churned_subscribers": int(round(churned_subscribers)),
                 "active_subscribers": int(round(active_subscribers)),
-                "subscription_price_usd": round(subscription_price_usd, 2),
-                "subscription_revenue_usd": round(revenue, 2),
             }
         )
         active_subscribers_prev = active_subscribers
@@ -373,7 +368,7 @@ def _build_subscription_rows(
 
 
 def _build_ad_rows(
-    subscription_rows: list[dict[str, Any]],
+    audience_rows: list[dict[str, Any]],
     ad_action_rate: float,
     ad_cpa_usd: float,
     jitter_std: float,
@@ -382,10 +377,10 @@ def _build_ad_rows(
     rng = random.Random(seed + 202)
     rows: list[dict[str, Any]] = []
 
-    for index, sub_row in enumerate(subscription_rows):
-        progress = index / max(1, len(subscription_rows) - 1)
-        mau = float(sub_row["mau"])
-        retention_rate = float(sub_row["subscription_retention_rate"])
+    for index, audience_row in enumerate(audience_rows):
+        progress = index / max(1, len(audience_rows) - 1)
+        mau = float(audience_row["mau"])
+        retention_rate = float(audience_row["subscription_retention_rate"])
 
         # Assumption: ad actions increase with MAU and are moderately boosted by retention quality.
         effective_action_rate = ad_action_rate * (0.75 + 0.5 * retention_rate) * (0.95 + 0.1 * progress)
@@ -395,14 +390,34 @@ def _build_ad_rows(
 
         rows.append(
             {
-                "month": sub_row["month"],
-                "year_index": sub_row["year_index"],
-                "phase": sub_row["phase"],
-                "mau": int(mau),
+                "month": audience_row["month"],
+                "year_index": audience_row["year_index"],
+                "phase": audience_row["phase"],
                 "ad_action_rate": round(effective_action_rate, 5),
                 "ad_actions": int(round(ad_actions)),
                 "ad_cpa_usd": round(ad_cpa_usd, 2),
                 "ad_revenue_usd": round(ad_revenue, 2),
+            }
+        )
+    return rows
+
+
+def _build_subscription_rows(
+    audience_rows: list[dict[str, Any]],
+    subscription_price_usd: float,
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+
+    for audience_row in audience_rows:
+        active_subscribers = float(audience_row["active_subscribers"])
+        revenue = active_subscribers * subscription_price_usd
+        rows.append(
+            {
+                "month": audience_row["month"],
+                "year_index": audience_row["year_index"],
+                "phase": audience_row["phase"],
+                "subscription_price_usd": round(subscription_price_usd, 2),
+                "subscription_revenue_usd": round(revenue, 2),
             }
         )
     return rows
@@ -421,6 +436,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     marketplace_fees_output = (
         MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_marketplace_fees_csv
     )
+    audience_output = MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_mau_csv
     subscriptions_output = (
         MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_subscriptions_csv
     )
@@ -448,12 +464,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         year2_3_max_txns=REVENUE_ASSUMPTIONS.year2_3_max_txns,
         seed=REVENUE_ASSUMPTIONS.seed,
     )
-    subscriptions_rows = _build_subscription_rows(
+    audience_rows = _build_audience_rows(
         transactions_rows=transactions_rows,
         monthly_factors=monthly_factors,
         mau_start=REVENUE_ASSUMPTIONS.mau_start,
         mau_end=REVENUE_ASSUMPTIONS.mau_end,
-        subscription_price_usd=REVENUE_ASSUMPTIONS.subscription_price_usd,
         conversion_start=REVENUE_ASSUMPTIONS.subscription_conversion_start,
         conversion_end=REVENUE_ASSUMPTIONS.subscription_conversion_end,
         retention_start=REVENUE_ASSUMPTIONS.subscription_retention_start,
@@ -461,8 +476,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         jitter_std=REVENUE_ASSUMPTIONS.jitter_std,
         seed=REVENUE_ASSUMPTIONS.seed,
     )
+    subscriptions_rows = _build_subscription_rows(
+        audience_rows=audience_rows,
+        subscription_price_usd=REVENUE_ASSUMPTIONS.subscription_price_usd,
+    )
     ad_rows = _build_ad_rows(
-        subscription_rows=subscriptions_rows,
+        audience_rows=audience_rows,
         ad_action_rate=REVENUE_ASSUMPTIONS.ad_action_rate,
         ad_cpa_usd=REVENUE_ASSUMPTIONS.ad_cpa_usd,
         jitter_std=REVENUE_ASSUMPTIONS.jitter_std,
@@ -470,6 +489,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
 
     _write_csv(marketplace_fees_output, transactions_rows)
+    _write_csv(audience_output, audience_rows)
     _write_csv(subscriptions_output, subscriptions_rows)
     _write_csv(ad_revenue_output, ad_rows)
     _write_csv(seasonality_output, blended_rows)
@@ -480,9 +500,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"baseline_month_gmv_usd={baseline.gmv_usd:.2f}")
     print(f"baseline_month_transaction_count={baseline.transaction_count}")
     print(f"transactions_rows={len(transactions_rows)}")
+    print(f"audience_rows={len(audience_rows)}")
     print(f"subscriptions_rows={len(subscriptions_rows)}")
     print(f"ad_rows={len(ad_rows)}")
     print(f"marketplace_fees_output={marketplace_fees_output}")
+    print(f"audience_output={audience_output}")
     print(f"subscriptions_output={subscriptions_output}")
     print(f"ad_revenue_output={ad_revenue_output}")
     print(f"seasonality_output={seasonality_output}")

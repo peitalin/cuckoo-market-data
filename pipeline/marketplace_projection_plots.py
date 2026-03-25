@@ -209,6 +209,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     marketplace_fees_input = (
         MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_marketplace_fees_csv
     )
+    audience_input = MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_mau_csv
     subscriptions_input = (
         MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_subscriptions_csv
     )
@@ -216,9 +217,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     output_dir = MARKETPLACE_FINANCE_DIR / DATA_PATHS.charts_dir
 
     marketplace_fee_rows = _read_growth_rows(marketplace_fees_input)
+    audience_rows = _read_growth_rows(audience_input)
     subscriptions_rows = _read_growth_rows(subscriptions_input)
     ad_rows = _read_growth_rows(ad_revenue_input)
 
+    audience_by_month = {row["month"]: row for row in audience_rows}
     subscriptions_by_month = {row["month"]: row for row in subscriptions_rows}
     ad_by_month = {row["month"]: row for row in ad_rows}
 
@@ -235,6 +238,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         month = row.get("month") or ""
         if not month:
             continue
+        audience_row = audience_by_month.get(month, {})
         sub_row = subscriptions_by_month.get(month, {})
         ad_row = ad_by_month.get(month, {})
 
@@ -248,8 +252,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         ad_revenue.append(ads)
         total_revenue.append(fee + subscriptions + ads)
         transaction_count.append(float(row.get("transaction_count") or 0.0))
-        mau.append(float(sub_row.get("mau") or 0.0))
-        active_subscribers.append(float(sub_row.get("active_subscribers") or 0.0))
+        mau.append(float(audience_row.get("mau") or 0.0))
+        active_subscribers.append(float(audience_row.get("active_subscribers") or 0.0))
 
     revenue_svg = output_dir / DATA_PATHS.revenue_chart_svg
     transactions_svg = output_dir / DATA_PATHS.transactions_chart_svg
@@ -283,7 +287,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     _render_line_chart_svg(
         title="Synthetic Audience Projection (36 Months)",
-        subtitle="MAU and active subscribers from subscriptions CSV",
+        subtitle="MAU and active subscribers from generated_mau.csv",
         y_label="Users",
         y_formatter="count",
         months=months,
@@ -301,6 +305,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
 
     print(f"marketplace_fees_input={marketplace_fees_input}")
+    print(f"audience_input={audience_input}")
     print(f"subscriptions_input={subscriptions_input}")
     print(f"ad_revenue_input={ad_revenue_input}")
     print(f"revenue_chart={revenue_svg}")

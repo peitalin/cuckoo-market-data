@@ -12,7 +12,7 @@ python3 main.py bundle
 python3 main.py plot
 ```
 
-You can edit modelling assumptions in `pipeline/assumptions.py` for different revenue forecast and MAU figures
+You can edit modelling assumptions in `pipeline/assumptions.py` for different audience and revenue figures
 
 ## Outputs
 
@@ -22,6 +22,7 @@ Raw marketplace data from Chrono24:
 
 Synthetic revenue projections based on Chrono24 data:
 - `data/generated_revenues_marketplace_fees.csv`
+- `data/generated_mau.csv`
 - `data/generated_revenues_subscriptions.csv`
 - `data/generated_revenues_ads.csv`
 

@@ -57,9 +57,9 @@ Columns:
 - `take_rate`: Marketplace fee take rate.
 - `transaction_fee_revenue_usd`: Projected monthly marketplace-fee revenue in USD.
 
-## generated_revenues_subscriptions.csv
+## generated_mau.csv
 
-Synthetic 36-month subscription revenue projection.
+Synthetic 36-month audience and subscriber-state projection.
 
 Columns:
 - `month`: Month bucket (`YYYY-MM-01`).
@@ -71,6 +71,15 @@ Columns:
 - `new_subscribers`: New subscribers in month.
 - `churned_subscribers`: Subscribers churned in month.
 - `active_subscribers`: Active subscribers in month.
+
+## generated_revenues_subscriptions.csv
+
+Synthetic 36-month subscription revenue projection.
+
+Columns:
+- `month`: Month bucket (`YYYY-MM-01`).
+- `year_index`: Projection year bucket (`1`, `2`, `3`).
+- `phase`: Growth phase label.
 - `subscription_price_usd`: Subscription price assumption (USD).
 - `subscription_revenue_usd`: Projected monthly subscription revenue (USD).
 
@@ -82,7 +91,6 @@ Columns:
 - `month`: Month bucket (`YYYY-MM-01`).
 - `year_index`: Projection year bucket (`1`, `2`, `3`).
 - `phase`: Growth phase label.
-- `mau`: Projected monthly active users.
 - `ad_action_rate`: Effective ad-action rate per MAU.
 - `ad_actions`: Projected monthly ad actions.
 - `ad_cpa_usd`: CPA payout assumption (USD per action).

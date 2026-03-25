@@ -19,13 +19,14 @@ MARKETPLACE_FINANCE_DIR = DATA_DIR
 
 
 def _write_assumptions_summary() -> None:
-    # Revenue-focused assumption notes for educational modeling transparency.
+    # Audience and revenue assumption notes for educational modeling transparency.
     assumptions_output = MARKETPLACE_FINANCE_DIR / DATA_PATHS.data_generation_assumptions_md
     assumption_text = dedent(
         f"""
-        # Revenue Projection Assumptions (36-Month Synthetic Model)
+        # Audience and Revenue Projection Assumptions (36-Month Synthetic Model)
 
-        This document justifies the assumptions used to generate projected revenue in:
+        This document justifies the assumptions used to generate projected audience and revenue in:
+        - `generated_mau.csv` (MAU and subscriber state)
         - `revenues_marketplace_fees` (marketplace fee revenue driver)
         - `revenues_subscriptions` (subscription revenue)
         - `revenues_ads` (advertising revenue)
@@ -71,11 +72,23 @@ def _write_assumptions_summary() -> None:
         ## 4) Subscription Revenue Assumptions
 
         - Monthly subscription price: `${REVENUE_ASSUMPTIONS.subscription_price_usd:.2f}`.
-        - The revenue generator uses a sigmoid MAU path and applies:
+        - The audience generator uses a sigmoid MAU path and applies:
           - MAU range: `{REVENUE_ASSUMPTIONS.mau_start:.0f}` -> `{REVENUE_ASSUMPTIONS.mau_end:.0f}`,
           - conversion ramp: `{REVENUE_ASSUMPTIONS.subscription_conversion_start:.3f}` -> `{REVENUE_ASSUMPTIONS.subscription_conversion_end:.3f}`,
           - monthly retention ramp: `{REVENUE_ASSUMPTIONS.subscription_retention_start:.2f}` -> `{REVENUE_ASSUMPTIONS.subscription_retention_end:.2f}`.
         - Active subscribers are constrained by both retained subscribers and current-period conversion.
+        - Subscription revenue is derived from active subscribers and the fixed monthly price.
+
+        Fields in `generated_mau.csv`:
+        - `month`: month bucket for the projection row.
+        - `year_index`: whether the row falls in projection year 1, 2, or 3.
+        - `phase`: coarse growth stage label for the scenario.
+        - `mau`: projected monthly active users for the month.
+        - `subscription_conversion_rate`: modeled MAU-to-paid conversion rate.
+        - `subscription_retention_rate`: modeled monthly subscriber retention rate.
+        - `new_subscribers`: subscribers added after conversion in the month.
+        - `churned_subscribers`: subscribers lost from the prior month.
+        - `active_subscribers`: ending active subscriber count for the month.
 
         Justification:
         - Pricing is accessible for analytics users while still monetizing high-intent cohorts.
@@ -114,6 +127,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     _write_assumptions_summary()
 
     print(f"marketplace_fees_output={MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_marketplace_fees_csv}")
+    print(f"audience_output={MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_mau_csv}")
     print(f"subscriptions_output={MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_subscriptions_csv}")
     print(f"ad_revenue_output={MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_ads_csv}")
     print(f"seasonality_output={DATA_DIR / DATA_PATHS.seasonality_factors_csv}")

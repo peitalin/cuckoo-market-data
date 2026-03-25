@@ -19,6 +19,7 @@ class DataPathConfig:
     raw_marketplace_transactions_csv: Path = Path("raw_marketplace_transactions.csv")
     raw_marketplace_daily_sales_csv: Path = Path("raw_marketplace_daily_sales.csv")
     generated_revenues_marketplace_fees_csv: Path = Path("generated_revenues_marketplace_fees.csv")
+    generated_mau_csv: Path = Path("generated_mau.csv")
     generated_revenues_subscriptions_csv: Path = Path("generated_revenues_subscriptions.csv")
     generated_revenues_ads_csv: Path = Path("generated_revenues_ads.csv")
     data_generation_assumptions_md: Path = Path("data_generation_assumptions.md")
