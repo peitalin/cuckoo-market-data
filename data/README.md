@@ -1,4 +1,4 @@
-# Marketplace Finance CSVs
+# Marketplace Finance Outputs
 
 Source of truth for modeling assumptions:
 - [data_generation_assumptions.md](./data_generation_assumptions.md)
@@ -40,11 +40,23 @@ Columns:
 - `transaction_gross_market_value`: Daily dollar transactions/sales seen on the platform (sum of `sale_price` in the bucket).
 - `distinct_seller_count`: Distinct seller count in the bucket.
 
-## generated_revenues_marketplace_fees.csv
+## synthetic_marketplace_projection_model.xlsx
 
-Synthetic 36-month marketplace-fee revenue projection.
+Single workbook that contains the projection inputs, deterministic random drivers, and formula-driven output sheets.
 
-Columns:
+Sheets:
+- `Assumptions`: editable inputs sourced from `pipeline/assumptions.py`, plus baseline sales inputs used by the workbook formulas.
+- `Seasonality`: month-level seasonality factors used by the projection formulas.
+- `Drivers`: deterministic jitter/noise inputs baked into the workbook so Excel formulas reproduce the model structure consistently.
+- `MarketplaceFees`: 36-month marketplace fee projection.
+- `MAU`: 36-month audience and subscriber-state projection.
+- `Subscriptions`: 36-month subscription revenue projection derived from the `MAU` sheet.
+- `Ads`: 36-month ad revenue projection derived from the `MAU` sheet.
+
+Workbook output columns:
+
+### MarketplaceFees
+
 - `month`: Month bucket (`YYYY-MM-01`).
 - `year_index`: Projection year bucket (`1`, `2`, `3`).
 - `phase`: Growth phase label.
@@ -57,11 +69,8 @@ Columns:
 - `take_rate`: Marketplace fee take rate.
 - `transaction_fee_revenue_usd`: Projected monthly marketplace-fee revenue in USD.
 
-## generated_mau.csv
+### MAU
 
-Synthetic 36-month audience and subscriber-state projection.
-
-Columns:
 - `month`: Month bucket (`YYYY-MM-01`).
 - `year_index`: Projection year bucket (`1`, `2`, `3`).
 - `phase`: Growth phase label.
@@ -72,22 +81,16 @@ Columns:
 - `churned_subscribers`: Subscribers churned in month.
 - `active_subscribers`: Active subscribers in month.
 
-## generated_revenues_subscriptions.csv
+### Subscriptions
 
-Synthetic 36-month subscription revenue projection.
-
-Columns:
 - `month`: Month bucket (`YYYY-MM-01`).
 - `year_index`: Projection year bucket (`1`, `2`, `3`).
 - `phase`: Growth phase label.
 - `subscription_price_usd`: Subscription price assumption (USD).
 - `subscription_revenue_usd`: Projected monthly subscription revenue (USD).
 
-## generated_revenues_ads.csv
+### Ads
 
-Synthetic 36-month ad revenue projection.
-
-Columns:
 - `month`: Month bucket (`YYYY-MM-01`).
 - `year_index`: Projection year bucket (`1`, `2`, `3`).
 - `phase`: Growth phase label.

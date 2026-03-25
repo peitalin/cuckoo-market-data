@@ -16,10 +16,12 @@ from typing import Sequence
 try:
     from .assumptions import PROJECTION_MONTHS
     from .assumptions import REVENUE_ASSUMPTIONS
+    from .projection_workbook import write_projection_workbook
     from .runtime_config import DATA_PATHS
 except ImportError:
     from assumptions import PROJECTION_MONTHS
     from assumptions import REVENUE_ASSUMPTIONS
+    from projection_workbook import write_projection_workbook
     from runtime_config import DATA_PATHS
 
 FRED_SERIES = (
@@ -241,6 +243,27 @@ def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         writer.writerows(rows)
 
 
+def _read_csv_rows(path: Path) -> list[dict[str, str]]:
+    if not path.exists():
+        raise FileNotFoundError(f"CSV not found: {path}")
+    with path.open("r", encoding="utf-8", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def _read_cached_monthly_factors(path: Path) -> dict[int, float]:
+    rows = _read_csv_rows(path)
+    factors: dict[int, float] = {}
+    for row in rows:
+        month_text = (row.get("month") or "").strip()
+        blended_factor = (row.get("blended_factor") or "").strip()
+        if not month_text or not blended_factor:
+            continue
+        factors[int(month_text)] = float(blended_factor)
+    if len(factors) != 12:
+        raise ValueError(f"expected 12 seasonality rows in {path}, found {len(factors)}")
+    return factors
+
+
 def _build_transactions_rows(
     baseline: BaselineMonth,
     projection_start: date,
@@ -315,6 +338,32 @@ def _build_transactions_rows(
     return rows
 
 
+def _build_market_driver_rows(
+    jitter_std: float,
+    seed: int,
+) -> list[dict[str, float]]:
+    rng = random.Random(seed)
+    rows: list[dict[str, float]] = []
+    for index in range(PROJECTION_MONTHS):
+        year_index = 1 if index < 12 else 2 if index < 24 else 3
+        if year_index == 1:
+            year1_jitter_multiplier = max(0.70, 1 + rng.gauss(0.0, jitter_std * 0.5))
+            txn_noise = 1.0
+            asp_noise = 1.0
+        else:
+            year1_jitter_multiplier = 1.0
+            txn_noise = max(0.85, 1 + rng.gauss(0.0, jitter_std * 0.4))
+            asp_noise = max(0.75, 1 + rng.gauss(0.0, jitter_std * 0.35))
+        rows.append(
+            {
+                "year1_jitter_multiplier": round(year1_jitter_multiplier, 6),
+                "txn_noise": round(txn_noise, 6),
+                "asp_noise": round(asp_noise, 6),
+            }
+        )
+    return rows
+
+
 def _build_audience_rows(
     transactions_rows: list[dict[str, Any]],
     monthly_factors: dict[int, float],
@@ -367,6 +416,17 @@ def _build_audience_rows(
     return rows
 
 
+def _build_mau_driver_rows(
+    jitter_std: float,
+    seed: int,
+) -> list[dict[str, float]]:
+    rng = random.Random(seed + 101)
+    return [
+        {"mau_noise": round(max(0.85, 1 + rng.gauss(0.0, jitter_std * 0.35)), 6)}
+        for _ in range(PROJECTION_MONTHS)
+    ]
+
+
 def _build_ad_rows(
     audience_rows: list[dict[str, Any]],
     ad_action_rate: float,
@@ -402,6 +462,19 @@ def _build_ad_rows(
     return rows
 
 
+def _build_ad_driver_rows(
+    jitter_std: float,
+    seed: int,
+) -> list[dict[str, float]]:
+    rng = random.Random(seed + 202)
+    rows: list[dict[str, float]] = []
+    for _ in range(PROJECTION_MONTHS):
+        rows.append(
+            {"ad_noise": round(max(0.80, 1 + rng.gauss(0.0, jitter_std * 0.3)), 6)}
+        )
+    return rows
+
+
 def _build_subscription_rows(
     audience_rows: list[dict[str, Any]],
     subscription_price_usd: float,
@@ -433,14 +506,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
 
     input_csv = MARKETPLACE_FINANCE_DIR / DATA_PATHS.raw_marketplace_daily_sales_csv
-    marketplace_fees_output = (
-        MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_marketplace_fees_csv
-    )
-    audience_output = MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_mau_csv
-    subscriptions_output = (
-        MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_subscriptions_csv
-    )
-    ad_revenue_output = MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_ads_csv
+    workbook_output = MARKETPLACE_FINANCE_DIR / DATA_PATHS.projection_workbook_xlsx
     seasonality_output = DATA_DIR / DATA_PATHS.seasonality_factors_csv
     seasonality_source_output = DATA_DIR / DATA_PATHS.seasonality_sources_csv
 
@@ -449,9 +515,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         REVENUE_ASSUMPTIONS.baseline_month,
     )
     projection_start = date.fromisoformat(f"{REVENUE_ASSUMPTIONS.projection_start_month}-01")
-    monthly_factors, blended_rows, source_rows = _blended_monthly_factors(
-        lookback_years=REVENUE_ASSUMPTIONS.seasonality_lookback_years
-    )
+    try:
+        monthly_factors, blended_rows, source_rows = _blended_monthly_factors(
+            lookback_years=REVENUE_ASSUMPTIONS.seasonality_lookback_years
+        )
+    except Exception:
+        monthly_factors = _read_cached_monthly_factors(seasonality_output)
+        blended_rows = _read_csv_rows(seasonality_output)
+        source_rows = _read_csv_rows(seasonality_source_output)
 
     transactions_rows = _build_transactions_rows(
         baseline=baseline,
@@ -462,6 +533,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         take_rate=REVENUE_ASSUMPTIONS.take_rate,
         year2_3_min_txns=REVENUE_ASSUMPTIONS.year2_3_min_txns,
         year2_3_max_txns=REVENUE_ASSUMPTIONS.year2_3_max_txns,
+        seed=REVENUE_ASSUMPTIONS.seed,
+    )
+    market_driver_rows = _build_market_driver_rows(
+        jitter_std=REVENUE_ASSUMPTIONS.jitter_std,
         seed=REVENUE_ASSUMPTIONS.seed,
     )
     audience_rows = _build_audience_rows(
@@ -476,6 +551,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         jitter_std=REVENUE_ASSUMPTIONS.jitter_std,
         seed=REVENUE_ASSUMPTIONS.seed,
     )
+    mau_driver_rows = _build_mau_driver_rows(
+        jitter_std=REVENUE_ASSUMPTIONS.jitter_std,
+        seed=REVENUE_ASSUMPTIONS.seed,
+    )
     subscriptions_rows = _build_subscription_rows(
         audience_rows=audience_rows,
         subscription_price_usd=REVENUE_ASSUMPTIONS.subscription_price_usd,
@@ -487,13 +566,28 @@ def main(argv: Sequence[str] | None = None) -> int:
         jitter_std=REVENUE_ASSUMPTIONS.jitter_std,
         seed=REVENUE_ASSUMPTIONS.seed,
     )
+    ad_driver_rows = _build_ad_driver_rows(
+        jitter_std=REVENUE_ASSUMPTIONS.jitter_std,
+        seed=REVENUE_ASSUMPTIONS.seed,
+    )
 
-    _write_csv(marketplace_fees_output, transactions_rows)
-    _write_csv(audience_output, audience_rows)
-    _write_csv(subscriptions_output, subscriptions_rows)
-    _write_csv(ad_revenue_output, ad_rows)
     _write_csv(seasonality_output, blended_rows)
     _write_csv(seasonality_source_output, source_rows)
+    write_projection_workbook(
+        workbook_output,
+        assumptions=REVENUE_ASSUMPTIONS,
+        baseline_month=baseline.month_start,
+        baseline_gmv_usd=baseline.gmv_usd,
+        baseline_transaction_count=baseline.transaction_count,
+        monthly_factors=monthly_factors,
+        marketplace_fee_rows=transactions_rows,
+        mau_rows=audience_rows,
+        subscription_rows=subscriptions_rows,
+        ad_rows=ad_rows,
+        market_driver_rows=market_driver_rows,
+        mau_driver_rows=mau_driver_rows,
+        ad_driver_rows=ad_driver_rows,
+    )
 
     print(f"baseline_month={baseline.month_start.isoformat()}")
     print(f"projection_start_month={projection_start.isoformat()}")
@@ -503,10 +597,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"audience_rows={len(audience_rows)}")
     print(f"subscriptions_rows={len(subscriptions_rows)}")
     print(f"ad_rows={len(ad_rows)}")
-    print(f"marketplace_fees_output={marketplace_fees_output}")
-    print(f"audience_output={audience_output}")
-    print(f"subscriptions_output={subscriptions_output}")
-    print(f"ad_revenue_output={ad_revenue_output}")
+    print(f"workbook_output={workbook_output}")
     print(f"seasonality_output={seasonality_output}")
     print(f"seasonality_source_output={seasonality_source_output}")
     return 0

@@ -18,10 +18,7 @@ def _env_first(keys: tuple[str, ...], default: str = "") -> str:
 class DataPathConfig:
     raw_marketplace_transactions_csv: Path = Path("raw_marketplace_transactions.csv")
     raw_marketplace_daily_sales_csv: Path = Path("raw_marketplace_daily_sales.csv")
-    generated_revenues_marketplace_fees_csv: Path = Path("generated_revenues_marketplace_fees.csv")
-    generated_mau_csv: Path = Path("generated_mau.csv")
-    generated_revenues_subscriptions_csv: Path = Path("generated_revenues_subscriptions.csv")
-    generated_revenues_ads_csv: Path = Path("generated_revenues_ads.csv")
+    projection_workbook_xlsx: Path = Path("synthetic_marketplace_projection_model.xlsx")
     data_generation_assumptions_md: Path = Path("data_generation_assumptions.md")
     charts_dir: Path = Path("charts")
     growth_projection_csv: Path = Path("synthetic_marketplace_growth_36m.csv")

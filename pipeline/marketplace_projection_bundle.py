@@ -25,11 +25,14 @@ def _write_assumptions_summary() -> None:
         f"""
         # Audience and Revenue Projection Assumptions (36-Month Synthetic Model)
 
-        This document justifies the assumptions used to generate projected audience and revenue in:
-        - `generated_mau.csv` (MAU and subscriber state)
-        - `revenues_marketplace_fees` (marketplace fee revenue driver)
-        - `revenues_subscriptions` (subscription revenue)
-        - `revenues_ads` (advertising revenue)
+        This document justifies the assumptions used to generate the workbook:
+        - `synthetic_marketplace_projection_model.xlsx`
+
+        Workbook sheets:
+        - `MarketplaceFees` (marketplace fee revenue driver)
+        - `MAU` (MAU and subscriber state)
+        - `Subscriptions` (subscription revenue)
+        - `Ads` (advertising revenue)
 
         ## Source of Truth
 
@@ -79,7 +82,7 @@ def _write_assumptions_summary() -> None:
         - Active subscribers are constrained by both retained subscribers and current-period conversion.
         - Subscription revenue is derived from active subscribers and the fixed monthly price.
 
-        Fields in `generated_mau.csv`:
+        Fields in workbook sheet `MAU`:
         - `month`: month bucket for the projection row.
         - `year_index`: whether the row falls in projection year 1, 2, or 3.
         - `phase`: coarse growth stage label for the scenario.
@@ -126,10 +129,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     _write_assumptions_summary()
 
-    print(f"marketplace_fees_output={MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_marketplace_fees_csv}")
-    print(f"audience_output={MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_mau_csv}")
-    print(f"subscriptions_output={MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_subscriptions_csv}")
-    print(f"ad_revenue_output={MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_ads_csv}")
+    print(f"workbook_output={MARKETPLACE_FINANCE_DIR / DATA_PATHS.projection_workbook_xlsx}")
     print(f"seasonality_output={DATA_DIR / DATA_PATHS.seasonality_factors_csv}")
     print(f"seasonality_source_output={DATA_DIR / DATA_PATHS.seasonality_sources_csv}")
     print(f"assumptions_output={MARKETPLACE_FINANCE_DIR / DATA_PATHS.data_generation_assumptions_md}")

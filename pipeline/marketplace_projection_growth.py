@@ -20,11 +20,15 @@ try:
     from .assumptions import MAU_ASSUMPTIONS
     from .assumptions import PROJECTION_MONTHS
     from .assumptions import REVENUE_ASSUMPTIONS
+    from .projection_workbook import read_projection_sheet_rows
+    from .projection_workbook import SHEET_MARKETPLACE_FEES
     from .runtime_config import DATA_PATHS
 except ImportError:
     from assumptions import MAU_ASSUMPTIONS
     from assumptions import PROJECTION_MONTHS
     from assumptions import REVENUE_ASSUMPTIONS
+    from projection_workbook import read_projection_sheet_rows
+    from projection_workbook import SHEET_MARKETPLACE_FEES
     from runtime_config import DATA_PATHS
 
 SCRIPT_DIR = Path(__file__).resolve().parent.parent
@@ -161,28 +165,26 @@ def _write_reference_visits_csv(path: Path, rows: list[Chrono24VisitsPoint], sou
 
 def _read_sales_projection(path: Path) -> dict[date, dict[str, float]]:
     if not path.exists():
-        raise FileNotFoundError(f"sales projection input not found: {path}")
+        raise FileNotFoundError(f"sales projection workbook not found: {path}")
     rows: dict[date, dict[str, float]] = {}
-    with path.open("r", encoding="utf-8", newline="") as handle:
-        reader = csv.DictReader(handle)
-        for row in reader:
-            month_text = (row.get("month") or "").strip()
-            if not month_text:
-                continue
-            month_key = date.fromisoformat(month_text)
-            rows[month_key] = {
-                "gmv_usd": float(
-                    (
-                        row.get("gross_market_value_usd")
-                        or row.get("gmv_usd")
-                        or "0"
-                    ).strip()
+    for row in read_projection_sheet_rows(path, SHEET_MARKETPLACE_FEES):
+        month_text = (row.get("month") or "").strip()
+        if not month_text:
+            continue
+        month_key = date.fromisoformat(month_text)
+        rows[month_key] = {
+            "gmv_usd": float(
+                (
+                    row.get("gross_market_value_usd")
+                    or row.get("gmv_usd")
                     or "0"
-                ),
-                "transaction_count": float(
-                    (row.get("transaction_count") or "0").strip() or "0"
-                ),
-            }
+                ).strip()
+                or "0"
+            ),
+            "transaction_count": float(
+                (row.get("transaction_count") or "0").strip() or "0"
+            ),
+        }
     if len(rows) != PROJECTION_MONTHS:
         raise ValueError(
             f"expected {PROJECTION_MONTHS} rows in sales projection, found {len(rows)} ({path})"
@@ -633,7 +635,7 @@ def _write_csv(path: Path, rows: list[dict[str, str]]) -> None:
 
 def main(argv: Sequence[str] | None = None) -> int:
     _ = argv
-    sales_input = MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_marketplace_fees_csv
+    sales_input = MARKETPLACE_FINANCE_DIR / DATA_PATHS.projection_workbook_xlsx
     output = MARKETPLACE_FINANCE_DIR / DATA_PATHS.growth_projection_csv
     chrono24_reference_output = DATA_DIR / DATA_PATHS.traffic_reference_csv
     seasonality_input = DATA_DIR / DATA_PATHS.seasonality_factors_csv

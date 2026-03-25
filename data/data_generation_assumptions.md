@@ -44,6 +44,32 @@ Justification:
 - A bounded transaction range prevents unrealistic scale-up against incumbents.
 - Modest CAGR + seasonality avoids overfitting one observed month.
 
+Marketplace fees formula:
+- Year 1 (`t < 12`):
+  - `txns=0`, `asp=0`, `gmv=0`, `fee=0`
+- Years 2-3 (`t >= 12`):
+  - `gmv_t = txns_t * asp_t`, `fee_t = gmv_t * take_rate`
+
+Where:
+- `gmv_t`: projected gross merchandise value in month t (total dollar value sold), computed as gmv_t = txns_t * asp_t.
+- `txns_t`: projected number of marketplace transactions in month t.
+- `asp_t`: projected average sale price in month t (USD per transaction).
+
+See:
+```
+txns_t = min(max_txns, max(min_txns, round(base_txns_t * txn_seasonality_t * txn_noise_t)))
+base_txns_t = min_txns + (max_txns - min_txns) * ((t - 12) / 23)
+txn_seasonality_t = 0.85 + 0.15 * R_t
+asp_t = baseline_asp * asp_seasonality_t * asp_growth_t * asp_noise_t
+asp_seasonality_t = 0.90 + 0.10 * R_t, asp_growth_t = (1 + 0.35 * cagr)^((t - 12) / 12)
+txn_noise_t and asp_noise_t are bounded random multipliers.
+
+Where:
+- R_t = seasonality_factor_t / seasonality_factor_baseline.
+```
+
+
+
 ## 4) Subscription Revenue Assumptions
 
 - Monthly subscription price: `$20.00`.
@@ -65,18 +91,21 @@ Fields in `generated_mau.csv`:
 - `churned_subscribers`: subscribers lost from the prior month.
 - `active_subscribers`: ending active subscriber count for the month.
 
-Justification:
-- Pricing is accessible for analytics users while still monetizing high-intent cohorts.
-- Conversion/retention ramps represent product maturity over time.
+Subscriptions Revenue Formula:
+- `retained_t = active_(t-1) * retention_t`
+- `target_t = mau_t * conversion_t`
+- `active_t = max(retained_t, target_t)`
+- `subscription_revenue_t = active_t * subscription_price_usd`
 
 ## 5) Ad Revenue Assumptions (CPA Model)
 
 - Baseline ad action rate: `0.015` per MAU (adjusted by retention and maturity).
 - CPA payout per action: `$3.00`.
 
-Justification:
-- CPA is straightforward for educational modeling.
-- Retention-adjusted ad actions reflect quality-adjusted audience monetization.
+Ads:
+- `effective_rate_t = ad_action_rate * (0.75 + 0.5*retention_t) * (0.95 + 0.1*progress_t)`
+- `ad_actions_t = mau_t * effective_rate_t * ad_noise_t`
+- `ad_revenue_t = ad_actions_t * ad_cpa_usd`
 
 ## 6) Seasonality Assumptions
 
@@ -84,6 +113,3 @@ Seasonality is sourced from FRED monthly retail series:
 - https://fred.stlouisfed.org/series/MRTSSM44831USN
 - https://fred.stlouisfed.org/series/RSXFS
 
-## 7) Conservatism and Reproducibility
-
-- Random seed: `42`

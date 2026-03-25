@@ -1,14 +1,23 @@
 from __future__ import annotations
 
-import csv
 from dataclasses import dataclass
 from html import escape
 from pathlib import Path
 from typing import Sequence
 
 try:
+    from .projection_workbook import read_projection_sheet_rows
+    from .projection_workbook import SHEET_ADS
+    from .projection_workbook import SHEET_MARKETPLACE_FEES
+    from .projection_workbook import SHEET_MAU
+    from .projection_workbook import SHEET_SUBSCRIPTIONS
     from .runtime_config import DATA_PATHS
 except ImportError:
+    from projection_workbook import read_projection_sheet_rows
+    from projection_workbook import SHEET_ADS
+    from projection_workbook import SHEET_MARKETPLACE_FEES
+    from projection_workbook import SHEET_MAU
+    from projection_workbook import SHEET_SUBSCRIPTIONS
     from runtime_config import DATA_PATHS
 
 SCRIPT_DIR = Path(__file__).resolve().parent.parent
@@ -21,16 +30,6 @@ class Series:
     name: str
     color: str
     values: list[float]
-
-
-def _read_growth_rows(path: Path) -> list[dict[str, str]]:
-    if not path.exists():
-        raise FileNotFoundError(f"growth CSV not found: {path}")
-    with path.open("r", encoding="utf-8", newline="") as handle:
-        rows = list(csv.DictReader(handle))
-    if not rows:
-        raise ValueError(f"growth CSV is empty: {path}")
-    return rows
 
 
 def _line_path(
@@ -206,20 +205,13 @@ def _write_index_html(
 
 def main(argv: Sequence[str] | None = None) -> int:
     _ = argv
-    marketplace_fees_input = (
-        MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_marketplace_fees_csv
-    )
-    audience_input = MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_mau_csv
-    subscriptions_input = (
-        MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_subscriptions_csv
-    )
-    ad_revenue_input = MARKETPLACE_FINANCE_DIR / DATA_PATHS.generated_revenues_ads_csv
+    workbook_input = MARKETPLACE_FINANCE_DIR / DATA_PATHS.projection_workbook_xlsx
     output_dir = MARKETPLACE_FINANCE_DIR / DATA_PATHS.charts_dir
 
-    marketplace_fee_rows = _read_growth_rows(marketplace_fees_input)
-    audience_rows = _read_growth_rows(audience_input)
-    subscriptions_rows = _read_growth_rows(subscriptions_input)
-    ad_rows = _read_growth_rows(ad_revenue_input)
+    marketplace_fee_rows = read_projection_sheet_rows(workbook_input, SHEET_MARKETPLACE_FEES)
+    audience_rows = read_projection_sheet_rows(workbook_input, SHEET_MAU)
+    subscriptions_rows = read_projection_sheet_rows(workbook_input, SHEET_SUBSCRIPTIONS)
+    ad_rows = read_projection_sheet_rows(workbook_input, SHEET_ADS)
 
     audience_by_month = {row["month"]: row for row in audience_rows}
     subscriptions_by_month = {row["month"]: row for row in subscriptions_rows}
@@ -287,7 +279,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     _render_line_chart_svg(
         title="Synthetic Audience Projection (36 Months)",
-        subtitle="MAU and active subscribers from generated_mau.csv",
+        subtitle="MAU and active subscribers from workbook sheet MAU",
         y_label="Users",
         y_formatter="count",
         months=months,
@@ -304,10 +296,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         audience_svg=audience_svg,
     )
 
-    print(f"marketplace_fees_input={marketplace_fees_input}")
-    print(f"audience_input={audience_input}")
-    print(f"subscriptions_input={subscriptions_input}")
-    print(f"ad_revenue_input={ad_revenue_input}")
+    print(f"workbook_input={workbook_input}")
     print(f"revenue_chart={revenue_svg}")
     print(f"transactions_chart={transactions_svg}")
     print(f"audience_chart={audience_svg}")

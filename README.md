@@ -1,6 +1,6 @@
 # export-csv
 
-CSV export and synthetic data generation for marketplace analysis.
+Synthetic data generation for marketplace analysis.
 
 ## Commands
 
@@ -20,15 +20,12 @@ Raw marketplace data from Chrono24:
 - `data/raw_marketplace_transactions.csv`
 - `data/raw_marketplace_daily_sales.csv`
 
-Synthetic revenue projections based on Chrono24 data:
-- `data/generated_revenues_marketplace_fees.csv`
-- `data/generated_mau.csv`
-- `data/generated_revenues_subscriptions.csv`
-- `data/generated_revenues_ads.csv`
+Synthetic projection workbook based on Chrono24 data:
+- `data/synthetic_marketplace_projection_model.xlsx`
 
 Assumptions for revenue projections:
 - `pipeline/assumptions.py` (source of truth)
 - `data/data_generation_assumptions.md` (snapshot)
 
-Detailed CSV field definitions:
+Workbook sheet definitions:
 - `data/README.md`
