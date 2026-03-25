@@ -58,7 +58,7 @@ Justification:
   - cohort retention curve: Month 1 `0.25`, Month 2 `0.12`, Month 3 `0.05`, then decay `0.97` per month.
 - Subscriber monetization then applies:
   - conversion starts at `0.008` and closes `8.0%` of the remaining gap to the `0.025` target each month,
-  - subscriber retention starts at `0.20` and closes `6.0%` of the remaining gap to the `0.50` target each month.
+  - subscriber retention starts at `0.30` and closes `6.0%` of the remaining gap to the `0.60` target each month.
 - Active subscribers are constrained by both retained subscribers and current-period conversion.
 - Subscription revenue is derived from active subscribers and the fixed monthly price.
 
