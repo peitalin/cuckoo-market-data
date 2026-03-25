@@ -193,7 +193,7 @@ def _write_index_html(
 </head>
 <body>
   <h1>Synthetic Marketplace Projections</h1>
-  <p>Charts generated from synthetic 36-month revenue CSV outputs.</p>
+  <p>Charts generated from the synthetic 36-month projection workbook.</p>
   <div class="chart"><img src="{escape(revenue_name)}" alt="Revenue projection chart" /></div>
   <div class="chart"><img src="{escape(transactions_name)}" alt="Transaction projection chart" /></div>
   <div class="chart"><img src="{escape(audience_name)}" alt="Audience projection chart" /></div>
@@ -245,7 +245,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         total_revenue.append(fee + subscriptions + ads)
         transaction_count.append(float(row.get("transaction_count") or 0.0))
         mau.append(float(audience_row.get("mau") or 0.0))
-        active_subscribers.append(float(audience_row.get("active_subscribers") or 0.0))
+        active_subscribers.append(float(sub_row.get("active_subscribers") or 0.0))
 
     revenue_svg = output_dir / DATA_PATHS.revenue_chart_svg
     transactions_svg = output_dir / DATA_PATHS.transactions_chart_svg
@@ -268,7 +268,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     _render_line_chart_svg(
         title="Synthetic Transaction Projection (36 Months)",
-        subtitle="Monthly transaction counts from marketplace-fees CSV",
+        subtitle="Monthly transaction counts from workbook sheet MarketplaceFees",
         y_label="Transactions",
         y_formatter="count",
         months=months,
@@ -279,7 +279,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     _render_line_chart_svg(
         title="Synthetic Audience Projection (36 Months)",
-        subtitle="MAU and active subscribers from workbook sheet MAU",
+        subtitle="MAU from workbook sheet MAU and active subscribers from workbook sheet Subscriptions",
         y_label="Users",
         y_formatter="count",
         months=months,

@@ -18,46 +18,10 @@ NS_MAIN = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 NS_REL = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 NS_PACKAGE = "http://schemas.openxmlformats.org/package/2006/relationships"
 
-SHEET_ASSUMPTIONS = "Assumptions"
-SHEET_SEASONALITY = "Seasonality"
-SHEET_DRIVERS = "Drivers"
 SHEET_MARKETPLACE_FEES = "MarketplaceFees"
 SHEET_MAU = "MAU"
 SHEET_SUBSCRIPTIONS = "Subscriptions"
 SHEET_ADS = "Ads"
-
-ASSUMPTION_REFS = {
-    "projection_months": "B2",
-    "projection_start_month": "B3",
-    "seasonality_lookback_years": "B4",
-    "sales_cagr": "B5",
-    "jitter_std": "B6",
-    "take_rate": "B7",
-    "year2_3_min_txns": "B8",
-    "year2_3_max_txns": "B9",
-    "subscription_price_usd": "B10",
-    "mau_start": "B11",
-    "mau_end": "B12",
-    "subscription_conversion_start": "B13",
-    "subscription_conversion_end": "B14",
-    "subscription_retention_start": "B15",
-    "subscription_retention_end": "B16",
-    "ad_action_rate": "B17",
-    "ad_cpa_usd": "B18",
-    "seed": "B19",
-    "baseline_month": "B20",
-    "baseline_month_gmv_usd": "B21",
-    "baseline_month_transaction_count": "B22",
-    "baseline_month_asp_usd": "B23",
-    "baseline_month_factor": "B24",
-    "mau_sigmoid_steepness": "B25",
-    "mau_sigmoid_lower": "B26",
-    "mau_sigmoid_upper": "B27",
-}
-
-
-def _assumption_ref(key: str) -> str:
-    return f"'{SHEET_ASSUMPTIONS}'!${ASSUMPTION_REFS[key][0]}${ASSUMPTION_REFS[key][1:]}"
 
 
 def _col_name(index: int) -> str:
@@ -262,142 +226,260 @@ def write_projection_workbook(
     baseline_transaction_count: int,
     monthly_factors: dict[int, float],
     marketplace_fee_rows: list[dict[str, Any]],
+    user_cohort_rows: list[dict[str, Any]],
+    user_cohort_matrix: list[list[int]],
     mau_rows: list[dict[str, Any]],
     subscription_rows: list[dict[str, Any]],
     ad_rows: list[dict[str, Any]],
     market_driver_rows: list[dict[str, float]],
-    mau_driver_rows: list[dict[str, float]],
     ad_driver_rows: list[dict[str, float]],
 ) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    baseline_asp = baseline_gmv_usd / max(1, baseline_transaction_count)
-    steepness = 7.5
-    sigmoid_lower = 1.0 / (1.0 + pow(2.718281828459045, steepness / 2.0))
-    sigmoid_upper = 1.0 / (1.0 + pow(2.718281828459045, -steepness / 2.0))
+    baseline_avg_sell_price = baseline_gmv_usd / max(1, baseline_transaction_count)
+    raw_baseline_month_factor = monthly_factors[baseline_month.month]
+    normalized_monthly_factors = {
+        month: factor / raw_baseline_month_factor
+        for month, factor in monthly_factors.items()
+    }
+    projection_months = assumptions.projection_months
 
-    assumptions_rows = [
-        [Cell.string("name"), Cell.string("value")],
-        [Cell.string("projection_months"), Cell.number(assumptions.projection_months)],
-        [Cell.string("projection_start_month"), Cell.string(assumptions.projection_start_month)],
-        [Cell.string("seasonality_lookback_years"), Cell.number(assumptions.seasonality_lookback_years)],
-        [Cell.string("sales_cagr"), Cell.number(assumptions.sales_cagr)],
-        [Cell.string("jitter_std"), Cell.number(assumptions.jitter_std)],
-        [Cell.string("take_rate"), Cell.number(assumptions.take_rate)],
-        [Cell.string("year2_3_min_txns"), Cell.number(assumptions.year2_3_min_txns)],
-        [Cell.string("year2_3_max_txns"), Cell.number(assumptions.year2_3_max_txns)],
-        [Cell.string("subscription_price_usd"), Cell.number(assumptions.subscription_price_usd)],
-        [Cell.string("mau_start"), Cell.number(assumptions.mau_start)],
-        [Cell.string("mau_end"), Cell.number(assumptions.mau_end)],
-        [Cell.string("subscription_conversion_start"), Cell.number(assumptions.subscription_conversion_start)],
-        [Cell.string("subscription_conversion_end"), Cell.number(assumptions.subscription_conversion_end)],
-        [Cell.string("subscription_retention_start"), Cell.number(assumptions.subscription_retention_start)],
-        [Cell.string("subscription_retention_end"), Cell.number(assumptions.subscription_retention_end)],
-        [Cell.string("ad_action_rate"), Cell.number(assumptions.ad_action_rate)],
-        [Cell.string("ad_cpa_usd"), Cell.number(assumptions.ad_cpa_usd)],
-        [Cell.string("seed"), Cell.number(assumptions.seed)],
-        [Cell.string("baseline_month"), Cell.string(baseline_month.isoformat())],
-        [Cell.string("baseline_month_gmv_usd"), Cell.number(round(baseline_gmv_usd, 2))],
-        [Cell.string("baseline_month_transaction_count"), Cell.number(baseline_transaction_count)],
-        [Cell.string("baseline_month_asp_usd"), Cell.number(round(baseline_asp, 2))],
-        [Cell.string("baseline_month_factor"), Cell.number(monthly_factors[baseline_month.month])],
-        [Cell.string("mau_sigmoid_steepness"), Cell.number(steepness)],
-        [Cell.string("mau_sigmoid_lower"), Cell.number(sigmoid_lower)],
-        [Cell.string("mau_sigmoid_upper"), Cell.number(sigmoid_upper)],
-    ]
+    def _assumption_row(name: str, value: str | float | int, details: str) -> list[Cell]:
+        value_cell = Cell.string(value) if isinstance(value, str) else Cell.number(value)
+        return [Cell.string(name), value_cell, Cell.string(details)]
 
-    seasonality_rows = [[Cell.string("month"), Cell.string("blended_factor")]]
-    for month in range(1, 13):
-        seasonality_rows.append([Cell.number(month), Cell.number(monthly_factors[month])])
+    def _section_row(title: str, details: str) -> list[Cell]:
+        return [Cell.string(f"[{title}]"), Cell.string(""), Cell.string(details)]
 
-    drivers_rows = [[
-        Cell.string("month"),
-        Cell.string("market_year1_jitter_multiplier"),
-        Cell.string("market_txn_noise"),
-        Cell.string("market_asp_noise"),
-        Cell.string("mau_noise"),
-        Cell.string("ad_noise"),
-    ]]
-    for index, row in enumerate(marketplace_fee_rows):
-        drivers_rows.append(
-            [
-                Cell.string(str(row["month"])),
-                Cell.number(market_driver_rows[index]["year1_jitter_multiplier"]),
-                Cell.number(market_driver_rows[index]["txn_noise"]),
-                Cell.number(market_driver_rows[index]["asp_noise"]),
-                Cell.number(mau_driver_rows[index]["mau_noise"]),
-                Cell.number(ad_driver_rows[index]["ad_noise"]),
-            ]
+    def _blank_row() -> list[Cell]:
+        return [Cell.string(""), Cell.string(""), Cell.string("")]
+
+    def _sheet_assumption_block(
+        title: str,
+        details: str,
+        spec_rows: list[tuple[str, str | float | int, str]],
+    ) -> tuple[list[list[Cell]], dict[str, str]]:
+        rows = [
+            _section_row(title, details),
+            [Cell.string("name"), Cell.string("value"), Cell.string("details")],
+        ]
+        refs: dict[str, str] = {}
+        for offset, (name, value, row_details) in enumerate(spec_rows, start=3):
+            rows.append(_assumption_row(name, value, row_details))
+            refs[name] = f"$B${offset}"
+        rows.append(_blank_row())
+        return rows, refs
+
+    def _retained_share_value(age: int) -> float:
+        if age <= 0:
+            return 1.0
+        if age == 1:
+            return assumptions.user_retention_month_1
+        if age == 2:
+            return assumptions.user_retention_month_2
+        if age == 3:
+            return assumptions.user_retention_month_3
+        return assumptions.user_retention_month_3 * pow(
+            assumptions.user_retention_decay,
+            age - 3,
         )
 
-    marketplace_rows = [[
+    marketplace_preamble, marketplace_refs = _sheet_assumption_block(
+        "MarketplaceFees Assumptions",
+        "Inputs used by the marketplace fee projection below.",
+        [
+            ("projection_start_month", assumptions.projection_start_month, "First month of the synthetic projection in YYYY-MM format."),
+            ("seasonality_lookback_years", assumptions.seasonality_lookback_years, "Historical lookback window used to build month-level seasonality factors."),
+            ("baseline_month", baseline_month.isoformat(), "Observed marketplace month used to anchor GMV and average selling price."),
+            ("baseline_month_gmv_usd", round(baseline_gmv_usd, 2), "Observed GMV for the baseline month from raw daily sales data."),
+            ("baseline_month_transaction_count", baseline_transaction_count, "Observed transaction count for the baseline month from raw daily sales data."),
+            ("baseline_month_avg_sell_price_usd", round(baseline_avg_sell_price, 2), "Derived average selling price for the baseline month."),
+            ("sales_cagr", assumptions.sales_cagr, "Annual growth rate applied to marketplace sales in Years 2 and 3."),
+            ("avg_sell_price_annual_growth", assumptions.avg_sell_price_annual_growth, "Annual inflation-style growth rate applied to average selling price."),
+            ("take_rate", assumptions.take_rate, "Marketplace fee rate applied to projected GMV."),
+            ("year2_3_min_txns", assumptions.year2_3_min_txns, "Lower bound for projected monthly transaction count after Year 1."),
+            ("year2_3_max_txns", assumptions.year2_3_max_txns, "Upper bound for projected monthly transaction count after Year 1."),
+            ("jitter_std", assumptions.jitter_std, "Standard deviation used by the random-driver formulas."),
+        ],
+    )
+    mau_preamble, mau_refs = _sheet_assumption_block(
+        "MAU Assumptions",
+        "Inputs used by the MAU rollup and cohort acquisition/retention model below.",
+        [
+            ("projection_months", assumptions.projection_months, "Number of projected monthly rows in the workbook model."),
+            ("projection_start_month", assumptions.projection_start_month, "First month of the synthetic projection in YYYY-MM format."),
+            ("new_users_start", assumptions.new_users_start, "New users acquired in the first projected cohort month."),
+            ("new_users_monthly_growth_year1", assumptions.new_users_monthly_growth_year1, "Monthly new-user growth rate applied in Year 1."),
+            ("new_users_monthly_growth_year2", assumptions.new_users_monthly_growth_year2, "Monthly new-user growth rate applied in Year 2."),
+            ("new_users_monthly_growth_year3", assumptions.new_users_monthly_growth_year3, "Monthly new-user growth rate applied in Year 3."),
+            ("new_user_holiday_spike_multiplier", assumptions.new_user_holiday_spike_multiplier, "Extra acquisition multiplier applied in November and December."),
+            (
+                "base_new_users_rule",
+                "Month 0 = start; later months = prior month * (1 + current growth rate)",
+                "Human-readable formula for the base_new_users column before seasonality, holiday spike, and noise are applied.",
+            ),
+            ("user_retention_month_1", assumptions.user_retention_month_1, "Share of a cohort still active one month after signup."),
+            ("user_retention_month_2", assumptions.user_retention_month_2, "Share of a cohort still active two months after signup."),
+            ("user_retention_month_3", assumptions.user_retention_month_3, "Share of a cohort still active three months after signup."),
+            ("user_retention_decay", assumptions.user_retention_decay, "Monthly decay applied to cohort retention after Month 3."),
+            ("jitter_std", assumptions.jitter_std, "Standard deviation used by cohort acquisition noise."),
+            ("dependency", "MAU cohort matrix on this sheet", "MAU is derived by summing active cohort contributions from the cohort matrix on this sheet."),
+        ],
+    )
+    subscriptions_preamble, subscriptions_refs = _sheet_assumption_block(
+        "Subscriptions Assumptions",
+        "Inputs used by the subscription revenue projection below.",
+        [
+            ("projection_months", assumptions.projection_months, "Number of projected monthly rows in the workbook model."),
+            ("projection_start_month", assumptions.projection_start_month, "First month of the synthetic projection in YYYY-MM format."),
+            ("subscription_conversion_start", assumptions.subscription_conversion_start, "Initial MAU-to-paid conversion rate."),
+            ("subscription_conversion_end", assumptions.subscription_conversion_end, "Target MAU-to-paid conversion rate approached over time."),
+            ("subscription_conversion_monthly_improvement_rate", assumptions.subscription_conversion_monthly_improvement_rate, "Share of the remaining conversion-rate gap closed each month."),
+            ("subscription_retention_start", assumptions.subscription_retention_start, "Initial monthly subscriber retention rate."),
+            ("subscription_retention_end", assumptions.subscription_retention_end, "Target monthly subscriber retention rate approached over time."),
+            ("subscription_retention_monthly_improvement_rate", assumptions.subscription_retention_monthly_improvement_rate, "Share of the remaining retention-rate gap closed each month."),
+            ("subscription_price_usd", assumptions.subscription_price_usd, "Monthly subscription price used by the Subscriptions sheet."),
+            ("dependency", "MAU.mau", "Subscriber-state and subscription revenue are derived from the MAU sheet's audience base."),
+        ],
+    )
+    ads_preamble, ads_refs = _sheet_assumption_block(
+        "Ads Assumptions",
+        "Inputs used by the ad revenue projection below.",
+        [
+            ("projection_months", assumptions.projection_months, "Number of projected monthly rows in the workbook model."),
+            ("projection_start_month", assumptions.projection_start_month, "First month of the synthetic projection in YYYY-MM format."),
+            ("sessions_per_mau", assumptions.sessions_per_mau, "Monthly sessions generated by each monthly active user."),
+            ("pageviews_per_session", assumptions.pageviews_per_session, "Average pageviews generated in each session."),
+            ("ad_action_rate_per_pageview", assumptions.ad_action_rate_per_pageview, "Share of pageviews that convert into a CPA-qualified action."),
+            ("ad_cpa_usd", assumptions.ad_cpa_usd, "CPA payout in USD for each modeled ad action."),
+            ("jitter_std", assumptions.jitter_std, "Standard deviation used by the random-driver formulas."),
+            ("dependency", "MAU.mau", "Ad calculations are derived from MAU, sessions, and pageviews."),
+        ],
+    )
+
+    marketplace_data_start = len(marketplace_preamble) + 2
+    mau_data_start = len(mau_preamble) + 2
+    subscriptions_data_start = len(subscriptions_preamble) + 2
+    ads_data_start = len(ads_preamble) + 2
+
+    marketplace_rows = marketplace_preamble + [[
         Cell.string("month"),
         Cell.string("year_index"),
         Cell.string("phase"),
         Cell.string("seasonality_factor"),
+        Cell.string("noise_market_year1_jitter"),
+        Cell.string("noise_market_txn"),
+        Cell.string("noise_market_avg_sell_price"),
         Cell.string("cagr_multiplier"),
-        Cell.string("jitter_multiplier"),
+        Cell.string("noise_market_combined"),
+        Cell.string("txn_trend_base"),
+        Cell.string("txn_seasonality_multiplier"),
         Cell.string("transaction_count"),
+        Cell.string("avg_sell_price_growth"),
+        Cell.string("avg_sell_price_usd"),
         Cell.string("gross_market_value_usd"),
-        Cell.string("actual_sales_price_usd"),
         Cell.string("take_rate"),
         Cell.string("transaction_fee_revenue_usd"),
     ]]
-    for index, row in enumerate(marketplace_fee_rows, start=2):
+    for offset, row in enumerate(marketplace_fee_rows):
+        index = marketplace_data_start + offset
         year_ref = f"$B{index}"
         seasonality_ref = f"D{index}"
-        cagr_ref = f"E{index}"
-        txns_ref = f"G{index}"
-        asp_ref = f"I{index}"
-        gmv_ref = f"H{index}"
-        take_rate_ref = f"J{index}"
-        progress_offset = index - 2
+        year1_jitter_ref = f"E{index}"
+        txn_noise_ref = f"F{index}"
+        avg_sell_price_noise_ref = f"G{index}"
+        txns_base_ref = f"J{index}"
+        txns_seasonality_ref = f"K{index}"
+        txns_ref = f"L{index}"
+        avg_sell_price_growth_ref = f"M{index}"
+        avg_sell_price_ref = f"N{index}"
+        gmv_ref = f"O{index}"
+        take_rate_ref = f"P{index}"
+        progress_offset = offset
         projection_offset = progress_offset - 12
+        month_text = str(row["month"])
+        month_number = int(month_text[5:7])
+        year_index = int(row["year_index"])
+        seasonality_factor = normalized_monthly_factors[month_number]
+        if year_index == 1:
+            txn_trend_base = 0.0
+            txn_seasonality_multiplier = 0.0
+            avg_sell_price_growth = 0.0
+        else:
+            ramp_progress = projection_offset / 23
+            txn_trend_base = assumptions.year2_3_min_txns + (
+                assumptions.year2_3_max_txns - assumptions.year2_3_min_txns
+            ) * ramp_progress
+            txn_seasonality_multiplier = 0.85 + 0.15 * seasonality_factor
+            avg_sell_price_growth = 1 + (assumptions.avg_sell_price_annual_growth * projection_offset / 12)
         marketplace_rows.append(
             [
-                Cell.string(str(row["month"])),
-                Cell.number(int(row["year_index"])),
+                Cell.string(month_text),
+                Cell.number(year_index),
                 Cell.string(str(row["phase"])),
+                Cell.number(seasonality_factor),
                 Cell.formula_number(
-                    formula=f"INDEX('{SHEET_SEASONALITY}'!$B$2:$B$13,VALUE(MID($A{index},6,2)))",
-                    cached_value=float(row["seasonality_factor"]),
+                    formula=f"MAX(0.7,1+_xlfn.NORM.INV(RAND(),0,{marketplace_refs['jitter_std']}*0.5))",
+                    cached_value=market_driver_rows[offset]["noise_market_year1_jitter"],
                 ),
                 Cell.formula_number(
-                    formula=f"IF({year_ref}=1,1,POWER(1+{_assumption_ref('sales_cagr')},{projection_offset}/12))",
+                    formula=f"MAX(0.85,1+_xlfn.NORM.INV(RAND(),0,{marketplace_refs['jitter_std']}*0.4))",
+                    cached_value=market_driver_rows[offset]["noise_market_txn"],
+                ),
+                Cell.formula_number(
+                    formula=f"MAX(0.75,1+_xlfn.NORM.INV(RAND(),0,{marketplace_refs['jitter_std']}*0.35))",
+                    cached_value=market_driver_rows[offset]["noise_market_avg_sell_price"],
+                ),
+                Cell.formula_number(
+                    formula=f"IF({year_ref}=1,1,POWER(1+{marketplace_refs['sales_cagr']},{projection_offset}/12))",
                     cached_value=float(row["cagr_multiplier"]),
                 ),
                 Cell.formula_number(
-                    formula=f"IF({year_ref}=1,'{SHEET_DRIVERS}'!$B{index},'{SHEET_DRIVERS}'!$C{index}*'{SHEET_DRIVERS}'!$D{index})",
-                    cached_value=float(row["jitter_multiplier"]),
+                    formula=f"IF({year_ref}=1,{year1_jitter_ref},{txn_noise_ref}*{avg_sell_price_noise_ref})",
+                    cached_value=float(row["noise_market_combined"]),
                 ),
                 Cell.formula_number(
                     formula=(
                         f"IF({year_ref}=1,0,"
-                        f"MIN({_assumption_ref('year2_3_max_txns')},"
-                        f"MAX({_assumption_ref('year2_3_min_txns')},"
-                        f"ROUND(("
-                        f"{_assumption_ref('year2_3_min_txns')}+"
-                        f"({_assumption_ref('year2_3_max_txns')}-{_assumption_ref('year2_3_min_txns')})*({projection_offset}/23)"
-                        f")*(0.85+0.15*({seasonality_ref}/{_assumption_ref('baseline_month_factor')}))*"
-                        f"'{SHEET_DRIVERS}'!$C{index},0))))"
+                        f"{marketplace_refs['year2_3_min_txns']}+"
+                        f"({marketplace_refs['year2_3_max_txns']}-{marketplace_refs['year2_3_min_txns']})*({projection_offset}/23))"
+                    ),
+                    cached_value=txn_trend_base,
+                ),
+                Cell.formula_number(
+                    formula=f"IF({year_ref}=1,0,0.85+0.15*{seasonality_ref})",
+                    cached_value=txn_seasonality_multiplier,
+                ),
+                Cell.formula_number(
+                    formula=(
+                        f"IF({year_ref}=1,0,"
+                        f"MIN({marketplace_refs['year2_3_max_txns']},"
+                        f"MAX({marketplace_refs['year2_3_min_txns']},"
+                        f"ROUND({txns_base_ref}*{txns_seasonality_ref}*{txn_noise_ref},0))))"
                     ),
                     cached_value=float(row["transaction_count"]),
                 ),
                 Cell.formula_number(
-                    formula=f"ROUND({txns_ref}*{asp_ref},2)",
-                    cached_value=float(row["gross_market_value_usd"]),
+                    formula=(
+                        f"IF({year_ref}=1,0,"
+                        f"1+({marketplace_refs['avg_sell_price_annual_growth']}*{projection_offset}/12))"
+                    ),
+                    cached_value=avg_sell_price_growth,
                 ),
                 Cell.formula_number(
                     formula=(
                         f"IF({year_ref}=1,0,"
-                        f"ROUND({_assumption_ref('baseline_month_asp_usd')}*"
-                        f"(0.9+0.1*({seasonality_ref}/{_assumption_ref('baseline_month_factor')}))*"
-                        f"POWER(1+({_assumption_ref('sales_cagr')}*0.35),{projection_offset}/12)*"
-                        f"'{SHEET_DRIVERS}'!$D{index},2))"
+                        f"ROUND({marketplace_refs['baseline_month_avg_sell_price_usd']}*"
+                        f"{avg_sell_price_growth_ref}*"
+                        f"{avg_sell_price_noise_ref},2))"
                     ),
-                    cached_value=float(row["actual_sales_price_usd"]),
+                    cached_value=float(row["avg_sell_price_usd"]),
                 ),
                 Cell.formula_number(
-                    formula=_assumption_ref("take_rate"),
+                    formula=f"ROUND({txns_ref}*{avg_sell_price_ref},2)",
+                    cached_value=float(row["gross_market_value_usd"]),
+                ),
+                Cell.formula_number(
+                    formula=marketplace_refs["take_rate"],
                     cached_value=float(row["take_rate"]),
                 ),
                 Cell.formula_number(
@@ -407,130 +489,271 @@ def write_projection_workbook(
             ]
         )
 
-    mau_sheet_rows = [[
+    spacer_col = 7
+    cohort_growth_col = 8
+    base_new_users_col = 9
+    cohort_seasonality_col = 10
+    noise_acquisition_col = 11
+    second_spacer_col = 12
+    retention_age_col = 13
+    retained_share_col = 14
+    first_contribution_col = 15
+    last_contribution_col = first_contribution_col + projection_months - 1
+    retained_share_range = (
+        f"${_col_name(retained_share_col)}${mau_data_start}:"
+        f"${_col_name(retained_share_col)}${mau_data_start + projection_months - 1}"
+    )
+    mau_sheet_rows = mau_preamble + [[
+        Cell.string("month"),
+        Cell.string("year_index"),
+        Cell.string("phase"),
+        Cell.string("new_users"),
+        Cell.string("returning_users"),
+        Cell.string("mau"),
+        Cell.string(""),
+        Cell.string("acquisition_growth_rate"),
+        Cell.string("base_new_users"),
+        Cell.string("seasonality_factor"),
+        Cell.string("noise_acquisition"),
+        Cell.string(""),
+        Cell.string("user_retention_age"),
+        Cell.string("user_retained_share"),
+        *[Cell.string(str(row["month"])) for row in user_cohort_rows],
+    ]]
+    for offset, row in enumerate(mau_rows):
+        index = mau_data_start + offset
+        year_ref = f"$B{index}"
+        growth_rate_ref = f"{_col_name(cohort_growth_col)}{index}"
+        base_new_users_ref = f"{_col_name(base_new_users_col)}{index}"
+        seasonality_ref = f"{_col_name(cohort_seasonality_col)}{index}"
+        noise_acquisition_ref = f"{_col_name(noise_acquisition_col)}{index}"
+        new_users_ref = f"D{index}"
+        contribution_col = _col_name(first_contribution_col + offset)
+        mau_ref = f"F{index}"
+        contributions: list[Cell] = []
+        for month_offset in range(projection_months):
+            if month_offset < offset:
+                contributions.append(Cell.string(""))
+                continue
+            contributions.append(
+                Cell.formula_number(
+                    formula=f"ROUND({new_users_ref}*INDEX({retained_share_range},{1 + month_offset - offset}),0)",
+                    cached_value=user_cohort_matrix[offset][month_offset],
+                )
+            )
+        seasonality_value = float(user_cohort_rows[offset]["seasonality_factor"])
+        mau_sheet_rows.append(
+            [
+                Cell.string(str(row["month"])),
+                Cell.number(int(row["year_index"])),
+                Cell.string(str(row["phase"])),
+                Cell.formula_number(
+                    formula=(
+                        f"ROUND(MAX(100,{base_new_users_ref}*"
+                        f"{seasonality_ref}*"
+                        f"{noise_acquisition_ref}),0)"
+                    ),
+                    cached_value=float(row["new_users"]),
+                ),
+                Cell.formula_number(
+                    formula=f"MAX(0,{mau_ref}-{new_users_ref})",
+                    cached_value=float(row["returning_users"]),
+                ),
+                Cell.formula_number(
+                    formula=(
+                        f"ROUND(SUM(${contribution_col}${mau_data_start}:"
+                        f"${contribution_col}${mau_data_start + projection_months - 1}),0)"
+                    ),
+                    cached_value=float(row["mau"]),
+                ),
+                Cell.string(""),
+                Cell.formula_number(
+                    formula=(
+                        f"IF({year_ref}=1,{mau_refs['new_users_monthly_growth_year1']},"
+                        f"IF({year_ref}=2,{mau_refs['new_users_monthly_growth_year2']},"
+                        f"{mau_refs['new_users_monthly_growth_year3']}))"
+                    ),
+                    cached_value=float(user_cohort_rows[offset]["acquisition_growth_rate"]),
+                ),
+                Cell.formula_number(
+                    formula=(
+                        mau_refs["new_users_start"]
+                        if offset == 0
+                        else f"{_col_name(base_new_users_col)}{index - 1}*(1+{growth_rate_ref})"
+                    ),
+                    cached_value=float(user_cohort_rows[offset]["base_new_users"]),
+                ),
+                Cell.number(seasonality_value),
+                Cell.formula_number(
+                    formula=f"MAX(0.85,1+_xlfn.NORM.INV(RAND(),0,{mau_refs['jitter_std']}*0.35))",
+                    cached_value=float(user_cohort_rows[offset]["noise_acquisition"]),
+                ),
+                Cell.string(""),
+                Cell.number(offset),
+                Cell.formula_number(
+                    formula=(
+                        f"IF(${_col_name(retention_age_col)}{index}=0,1,"
+                        f"IF(${_col_name(retention_age_col)}{index}=1,{mau_refs['user_retention_month_1']},"
+                        f"IF(${_col_name(retention_age_col)}{index}=2,{mau_refs['user_retention_month_2']},"
+                        f"IF(${_col_name(retention_age_col)}{index}=3,{mau_refs['user_retention_month_3']},"
+                        f"{mau_refs['user_retention_month_3']}*POWER({mau_refs['user_retention_decay']},${_col_name(retention_age_col)}{index}-3))))"
+                    ),
+                    cached_value=_retained_share_value(offset),
+                ),
+                *contributions,
+            ]
+        )
+
+    subscription_sheet_rows = subscriptions_preamble + [[
         Cell.string("month"),
         Cell.string("year_index"),
         Cell.string("phase"),
         Cell.string("mau"),
         Cell.string("subscription_conversion_rate"),
         Cell.string("subscription_retention_rate"),
+        Cell.string("retained_subscribers"),
         Cell.string("new_subscribers"),
         Cell.string("churned_subscribers"),
         Cell.string("active_subscribers"),
-    ]]
-    for index, row in enumerate(mau_rows, start=2):
-        progress = f"({index}-2)/({_assumption_ref('projection_months')}-1)"
-        prior_active = f"IF(ROW()=2,0,I{index - 1})"
-        retained = f"({prior_active}*F{index})"
-        mau_formula = (
-            f"ROUND(MAX(100,("
-            f"{_assumption_ref('mau_start')}+({_assumption_ref('mau_end')}-{_assumption_ref('mau_start')})*"
-            f"((1/(1+EXP(-{_assumption_ref('mau_sigmoid_steepness')}*({progress}-0.5)))-"
-            f"{_assumption_ref('mau_sigmoid_lower')})/"
-            f"({_assumption_ref('mau_sigmoid_upper')}-{_assumption_ref('mau_sigmoid_lower')})))"
-            f"*(0.92+0.08*INDEX('{SHEET_SEASONALITY}'!$B$2:$B$13,VALUE(MID($A{index},6,2))))*"
-            f"'{SHEET_DRIVERS}'!$E{index}),0)"
-        )
-        mau_sheet_rows.append(
-            [
-                Cell.string(str(row["month"])),
-                Cell.number(int(row["year_index"])),
-                Cell.string(str(row["phase"])),
-                Cell.formula_number(mau_formula, float(row["mau"])),
-                Cell.formula_number(
-                    formula=(
-                        f"{_assumption_ref('subscription_conversion_start')}+"
-                        f"({_assumption_ref('subscription_conversion_end')}-{_assumption_ref('subscription_conversion_start')})*{progress}"
-                    ),
-                    cached_value=float(row["subscription_conversion_rate"]),
-                ),
-                Cell.formula_number(
-                    formula=(
-                        f"{_assumption_ref('subscription_retention_start')}+"
-                        f"({_assumption_ref('subscription_retention_end')}-{_assumption_ref('subscription_retention_start')})*{progress}"
-                    ),
-                    cached_value=float(row["subscription_retention_rate"]),
-                ),
-                Cell.formula_number(
-                    formula=f"ROUND(MAX(0,I{index}-{retained}),0)",
-                    cached_value=float(row["new_subscribers"]),
-                ),
-                Cell.formula_number(
-                    formula=f"ROUND(MAX(0,{prior_active}-{retained}),0)",
-                    cached_value=float(row["churned_subscribers"]),
-                ),
-                Cell.formula_number(
-                    formula=f"ROUND(MAX({retained},D{index}*E{index}),0)",
-                    cached_value=float(row["active_subscribers"]),
-                ),
-            ]
-        )
-
-    subscription_sheet_rows = [[
-        Cell.string("month"),
-        Cell.string("year_index"),
-        Cell.string("phase"),
         Cell.string("subscription_price_usd"),
         Cell.string("subscription_revenue_usd"),
     ]]
-    for index, row in enumerate(subscription_rows, start=2):
+    for offset, row in enumerate(subscription_rows):
+        index = subscriptions_data_start + offset
+        mau_row = mau_data_start + offset
+        mau_ref = f"D{index}"
+        conversion_ref = f"E{index}"
+        retention_ref = f"F{index}"
+        retained_ref = f"G{index}"
+        prior_active_ref = f"IF(ROW()={subscriptions_data_start},0,J{index - 1})"
         subscription_sheet_rows.append(
             [
                 Cell.string(str(row["month"])),
                 Cell.number(int(row["year_index"])),
                 Cell.string(str(row["phase"])),
                 Cell.formula_number(
-                    formula=_assumption_ref("subscription_price_usd"),
+                    formula=f"'{SHEET_MAU}'!$F{mau_row}",
+                    cached_value=float(row["mau"]),
+                ),
+                Cell.formula_number(
+                    formula=(
+                        subscriptions_refs["subscription_conversion_start"]
+                        if offset == 0
+                        else (
+                            f"E{index - 1}+"
+                            f"({subscriptions_refs['subscription_conversion_end']}-E{index - 1})*"
+                            f"{subscriptions_refs['subscription_conversion_monthly_improvement_rate']}"
+                        )
+                    ),
+                    cached_value=float(row["subscription_conversion_rate"]),
+                ),
+                Cell.formula_number(
+                    formula=(
+                        subscriptions_refs["subscription_retention_start"]
+                        if offset == 0
+                        else (
+                            f"F{index - 1}+"
+                            f"({subscriptions_refs['subscription_retention_end']}-F{index - 1})*"
+                            f"{subscriptions_refs['subscription_retention_monthly_improvement_rate']}"
+                        )
+                    ),
+                    cached_value=float(row["subscription_retention_rate"]),
+                ),
+                Cell.formula_number(
+                    formula=f"ROUND({prior_active_ref}*{retention_ref},0)",
+                    cached_value=float(row["retained_subscribers"]),
+                ),
+                Cell.formula_number(
+                    formula=f"ROUND(MAX(0,J{index}-{retained_ref}),0)",
+                    cached_value=float(row["new_subscribers"]),
+                ),
+                Cell.formula_number(
+                    formula=f"ROUND(MAX(0,{prior_active_ref}-{retained_ref}),0)",
+                    cached_value=float(row["churned_subscribers"]),
+                ),
+                Cell.formula_number(
+                    formula=f"ROUND(MAX({retained_ref},{mau_ref}*{conversion_ref}),0)",
+                    cached_value=float(row["active_subscribers"]),
+                ),
+                Cell.formula_number(
+                    formula=subscriptions_refs["subscription_price_usd"],
                     cached_value=float(row["subscription_price_usd"]),
                 ),
                 Cell.formula_number(
-                    formula=f"ROUND('{SHEET_MAU}'!$I{index}*D{index},2)",
+                    formula=f"ROUND(J{index}*K{index},2)",
                     cached_value=float(row["subscription_revenue_usd"]),
                 ),
             ]
         )
 
-    ad_sheet_rows = [[
+    ad_sheet_rows = ads_preamble + [[
         Cell.string("month"),
         Cell.string("year_index"),
         Cell.string("phase"),
-        Cell.string("ad_action_rate"),
+        Cell.string("sessions_per_mau"),
+        Cell.string("pageviews_per_session"),
+        Cell.string("sessions"),
+        Cell.string("pageviews"),
+        Cell.string("ad_action_rate_per_pageview"),
+        Cell.string("noise_ad"),
         Cell.string("ad_actions"),
         Cell.string("ad_cpa_usd"),
         Cell.string("ad_revenue_usd"),
     ]]
-    for index, row in enumerate(ad_rows, start=2):
-        progress = f"({index}-2)/({_assumption_ref('projection_months')}-1)"
+    for offset, row in enumerate(ad_rows):
+        index = ads_data_start + offset
+        mau_row = mau_data_start + offset
+        sessions_per_mau_ref = f"D{index}"
+        pageviews_per_session_ref = f"E{index}"
+        sessions_ref = f"F{index}"
+        pageviews_ref = f"G{index}"
+        ad_action_rate_ref = f"H{index}"
+        noise_ad_ref = f"I{index}"
         ad_sheet_rows.append(
             [
                 Cell.string(str(row["month"])),
                 Cell.number(int(row["year_index"])),
                 Cell.string(str(row["phase"])),
                 Cell.formula_number(
-                    formula=(
-                        f"{_assumption_ref('ad_action_rate')}*(0.75+0.5*'{SHEET_MAU}'!$F{index})*(0.95+0.1*{progress})"
-                    ),
-                    cached_value=float(row["ad_action_rate"]),
+                    formula=ads_refs["sessions_per_mau"],
+                    cached_value=float(row["sessions_per_mau"]),
                 ),
                 Cell.formula_number(
-                    formula=f"ROUND('{SHEET_MAU}'!$D{index}*D{index}*'{SHEET_DRIVERS}'!$F{index},0)",
+                    formula=ads_refs["pageviews_per_session"],
+                    cached_value=float(row["pageviews_per_session"]),
+                ),
+                Cell.formula_number(
+                    formula=f"ROUND('{SHEET_MAU}'!$F{mau_row}*{sessions_per_mau_ref},0)",
+                    cached_value=float(row["sessions"]),
+                ),
+                Cell.formula_number(
+                    formula=f"ROUND({sessions_ref}*{pageviews_per_session_ref},0)",
+                    cached_value=float(row["pageviews"]),
+                ),
+                Cell.formula_number(
+                    formula=ads_refs["ad_action_rate_per_pageview"],
+                    cached_value=float(row["ad_action_rate_per_pageview"]),
+                ),
+                Cell.formula_number(
+                    formula=f"MAX(0.8,1+_xlfn.NORM.INV(RAND(),0,{ads_refs['jitter_std']}*0.3))",
+                    cached_value=float(ad_driver_rows[offset]["noise_ad"]),
+                ),
+                Cell.formula_number(
+                    formula=f"ROUND({pageviews_ref}*{ad_action_rate_ref}*{noise_ad_ref},0)",
                     cached_value=float(row["ad_actions"]),
                 ),
                 Cell.formula_number(
-                    formula=_assumption_ref("ad_cpa_usd"),
+                    formula=ads_refs["ad_cpa_usd"],
                     cached_value=float(row["ad_cpa_usd"]),
                 ),
                 Cell.formula_number(
-                    formula=f"ROUND(E{index}*F{index},2)",
+                    formula=f"ROUND(J{index}*K{index},2)",
                     cached_value=float(row["ad_revenue_usd"]),
                 ),
             ]
         )
 
     sheets = [
-        Sheet(SHEET_ASSUMPTIONS, assumptions_rows),
-        Sheet(SHEET_SEASONALITY, seasonality_rows),
-        Sheet(SHEET_DRIVERS, drivers_rows),
         Sheet(SHEET_MARKETPLACE_FEES, marketplace_rows),
         Sheet(SHEET_MAU, mau_sheet_rows),
         Sheet(SHEET_SUBSCRIPTIONS, subscription_sheet_rows),
@@ -590,19 +813,27 @@ def read_projection_sheet_rows(path: Path, sheet_name: str) -> list[dict[str, st
             cell_map[column_index] = value
         rows_by_index[row_number] = cell_map
 
-    header_cells = rows_by_index.get(1, {})
+    header_row_number = next(
+        (
+            row_number
+            for row_number in sorted(rows_by_index.keys())
+            if rows_by_index[row_number].get(1, "") == "month"
+        ),
+        1,
+    )
+    header_cells = rows_by_index.get(header_row_number, {})
     headers = {
         column_index: value
         for column_index, value in header_cells.items()
         if value
     }
     output: list[dict[str, str]] = []
-    for row_number in sorted(number for number in rows_by_index.keys() if number > 1):
+    for row_number in sorted(number for number in rows_by_index.keys() if number > header_row_number):
         row_cells = rows_by_index[row_number]
-        output.append(
-            {
-                header: row_cells.get(column_index, "")
-                for column_index, header in headers.items()
-            }
-        )
+        record = {
+            header: row_cells.get(column_index, "")
+            for column_index, header in headers.items()
+        }
+        if any(value != "" for value in record.values()):
+            output.append(record)
     return output

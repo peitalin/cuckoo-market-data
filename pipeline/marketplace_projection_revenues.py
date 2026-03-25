@@ -61,16 +61,6 @@ def _add_months(value: date, months: int) -> date:
     return date(year, month, 1)
 
 
-def _sigmoid_progress(position: float, total: float, steepness: float = 8.0) -> float:
-    if total <= 0:
-        return 1.0
-    x = max(0.0, min(1.0, position / total))
-    lower = 1.0 / (1.0 + math.exp(steepness / 2.0))
-    upper = 1.0 / (1.0 + math.exp(-steepness / 2.0))
-    raw = 1.0 / (1.0 + math.exp(-steepness * (x - 0.5)))
-    return (raw - lower) / (upper - lower)
-
-
 def _read_daily_sales_monthly_baseline(
     input_csv: Path, baseline_month: str | None
 ) -> BaselineMonth:
@@ -269,6 +259,7 @@ def _build_transactions_rows(
     projection_start: date,
     monthly_factors: dict[int, float],
     cagr: float,
+    avg_sell_price_annual_growth: float,
     jitter_std: float,
     take_rate: float,
     year2_3_min_txns: int,
@@ -277,7 +268,7 @@ def _build_transactions_rows(
 ) -> list[dict[str, Any]]:
     rng = random.Random(seed)
     baseline_factor = monthly_factors[baseline.month_start.month]
-    baseline_asp = baseline.gmv_usd / max(1, baseline.transaction_count)
+    baseline_avg_sell_price = baseline.gmv_usd / max(1, baseline.transaction_count)
 
     rows: list[dict[str, Any]] = []
     for index in range(PROJECTION_MONTHS):
@@ -296,10 +287,10 @@ def _build_transactions_rows(
         if year_index == 1:
             # Assumption: pre-marketplace period focuses on user growth, so transactions are zero.
             txns = 0
-            asp = 0.0
+            avg_sell_price = 0.0
             gmv = 0.0
             cagr_multiplier = 1.0
-            jitter_multiplier = max(0.70, 1 + rng.gauss(0.0, jitter_std * 0.5))
+            noise_market_combined = max(0.70, 1 + rng.gauss(0.0, jitter_std * 0.5))
         else:
             projection_offset = index - 12
             cagr_multiplier = math.pow(1 + cagr, projection_offset / 12)
@@ -312,12 +303,15 @@ def _build_transactions_rows(
             txns = int(round(trend_txns * txn_seasonality * txn_noise))
             txns = min(year2_3_max_txns, max(year2_3_min_txns, txns))
 
-            asp_seasonality = 0.90 + 0.10 * seasonality_ratio
-            asp_growth = math.pow(1 + (cagr * 0.35), projection_offset / 12)
-            asp_noise = max(0.75, 1 + rng.gauss(0.0, jitter_std * 0.35))
-            asp = baseline_asp * asp_seasonality * asp_growth * asp_noise
-            gmv = txns * asp
-            jitter_multiplier = txn_noise * asp_noise
+            avg_sell_price_growth = 1 + (avg_sell_price_annual_growth * projection_offset / 12)
+            avg_sell_price_noise = max(0.75, 1 + rng.gauss(0.0, jitter_std * 0.35))
+            avg_sell_price = (
+                baseline_avg_sell_price
+                * avg_sell_price_growth
+                * avg_sell_price_noise
+            )
+            gmv = txns * avg_sell_price
+            noise_market_combined = txn_noise * avg_sell_price_noise
 
         fee_revenue = gmv * take_rate if txns > 0 else 0.0
         rows.append(
@@ -327,10 +321,10 @@ def _build_transactions_rows(
                 "phase": phase,
                 "seasonality_factor": round(seasonality_factor, 6),
                 "cagr_multiplier": round(cagr_multiplier, 6),
-                "jitter_multiplier": round(jitter_multiplier, 6),
+                "noise_market_combined": round(noise_market_combined, 6),
                 "transaction_count": txns,
                 "gross_market_value_usd": round(gmv, 2),
-                "actual_sales_price_usd": round(asp, 2),
+                "avg_sell_price_usd": round(avg_sell_price, 2),
                 "take_rate": round(take_rate, 4),
                 "transaction_fee_revenue_usd": round(fee_revenue, 2),
             }
@@ -347,52 +341,177 @@ def _build_market_driver_rows(
     for index in range(PROJECTION_MONTHS):
         year_index = 1 if index < 12 else 2 if index < 24 else 3
         if year_index == 1:
-            year1_jitter_multiplier = max(0.70, 1 + rng.gauss(0.0, jitter_std * 0.5))
-            txn_noise = 1.0
-            asp_noise = 1.0
+            noise_market_year1_jitter = max(0.70, 1 + rng.gauss(0.0, jitter_std * 0.5))
+            noise_market_txn = 1.0
+            noise_market_avg_sell_price = 1.0
         else:
-            year1_jitter_multiplier = 1.0
-            txn_noise = max(0.85, 1 + rng.gauss(0.0, jitter_std * 0.4))
-            asp_noise = max(0.75, 1 + rng.gauss(0.0, jitter_std * 0.35))
+            noise_market_year1_jitter = 1.0
+            noise_market_txn = max(0.85, 1 + rng.gauss(0.0, jitter_std * 0.4))
+            noise_market_avg_sell_price = max(0.75, 1 + rng.gauss(0.0, jitter_std * 0.35))
         rows.append(
             {
-                "year1_jitter_multiplier": round(year1_jitter_multiplier, 6),
-                "txn_noise": round(txn_noise, 6),
-                "asp_noise": round(asp_noise, 6),
+                "noise_market_year1_jitter": round(noise_market_year1_jitter, 6),
+                "noise_market_txn": round(noise_market_txn, 6),
+                "noise_market_avg_sell_price": round(noise_market_avg_sell_price, 6),
             }
         )
     return rows
 
 
-def _build_audience_rows(
+def _cohort_growth_rate_for_index(
+    index: int,
+    *,
+    year1: float,
+    year2: float,
+    year3: float,
+) -> float:
+    if index < 12:
+        return year1
+    if index < 24:
+        return year2
+    return year3
+
+
+def _cohort_new_user_multiplier(
+    index: int,
+    *,
+    year1: float,
+    year2: float,
+    year3: float,
+) -> float:
+    if index < 12:
+        return math.pow(1 + year1, index)
+    if index < 24:
+        return math.pow(1 + year1, 11) * math.pow(1 + year2, index - 11)
+    return (
+        math.pow(1 + year1, 11)
+        * math.pow(1 + year2, 12)
+        * math.pow(1 + year3, index - 23)
+    )
+
+
+def _cohort_retained_share(
+    age: int,
+    *,
+    month_1: float,
+    month_2: float,
+    month_3: float,
+    decay: float,
+) -> float:
+    if age <= 0:
+        return 1.0
+    if age == 1:
+        return month_1
+    if age == 2:
+        return month_2
+    if age == 3:
+        return month_3
+    return month_3 * math.pow(decay, age - 3)
+
+
+def _build_user_cohort_rows(
     transactions_rows: list[dict[str, Any]],
     monthly_factors: dict[int, float],
-    mau_start: float,
-    mau_end: float,
-    conversion_start: float,
-    conversion_end: float,
-    retention_start: float,
-    retention_end: float,
+    new_users_start: float,
+    new_users_growth_year1: float,
+    new_users_growth_year2: float,
+    new_users_growth_year3: float,
+    new_user_holiday_spike_multiplier: float,
     jitter_std: float,
     seed: int,
 ) -> list[dict[str, Any]]:
     rng = random.Random(seed + 101)
     rows: list[dict[str, Any]] = []
-    active_subscribers_prev = 0.0
 
     for index, tx_row in enumerate(transactions_rows):
         month_text = str(tx_row["month"])
         month_key = date.fromisoformat(month_text)
-        progress = index / max(1, len(transactions_rows) - 1)
-        growth_curve = _sigmoid_progress(index, len(transactions_rows) - 1, steepness=7.5)
+        acquisition_growth_rate = _cohort_growth_rate_for_index(
+            index,
+            year1=new_users_growth_year1,
+            year2=new_users_growth_year2,
+            year3=new_users_growth_year3,
+        )
+        base_new_users = new_users_start * _cohort_new_user_multiplier(
+            index,
+            year1=new_users_growth_year1,
+            year2=new_users_growth_year2,
+            year3=new_users_growth_year3,
+        )
+        seasonality = monthly_factors[month_key.month]
+        if month_key.month in (11, 12):
+            seasonality *= new_user_holiday_spike_multiplier
+        noise_acquisition = max(0.85, 1 + rng.gauss(0.0, jitter_std * 0.35))
+        new_users = max(100.0, base_new_users * seasonality * noise_acquisition)
+        rows.append(
+            {
+                "month": month_text,
+                "year_index": tx_row["year_index"],
+                "phase": tx_row["phase"],
+                "acquisition_growth_rate": round(acquisition_growth_rate, 4),
+                "base_new_users": round(base_new_users, 2),
+                "seasonality_factor": round(seasonality, 6),
+                "noise_acquisition": round(noise_acquisition, 6),
+                "new_users": int(round(new_users)),
+            }
+        )
+    return rows
 
-        mau_baseline = mau_start + (mau_end - mau_start) * growth_curve
-        seasonality = 0.92 + 0.08 * monthly_factors[month_key.month]
-        mau_noise = max(0.85, 1 + rng.gauss(0.0, jitter_std * 0.35))
-        mau = max(100.0, mau_baseline * seasonality * mau_noise)
 
-        conversion_rate = conversion_start + (conversion_end - conversion_start) * progress
-        retention_rate = retention_start + (retention_end - retention_start) * progress
+def _build_user_cohort_matrix(
+    cohort_rows: list[dict[str, Any]],
+    *,
+    month_1: float,
+    month_2: float,
+    month_3: float,
+    decay: float,
+) -> list[list[int]]:
+    matrix: list[list[int]] = []
+    for start_index, row in enumerate(cohort_rows):
+        new_users = float(row["new_users"])
+        contribution_row: list[int] = []
+        for month_index in range(len(cohort_rows)):
+            if month_index < start_index:
+                contribution_row.append(0)
+                continue
+            retained_share = _cohort_retained_share(
+                month_index - start_index,
+                month_1=month_1,
+                month_2=month_2,
+                month_3=month_3,
+                decay=decay,
+            )
+            contribution_row.append(int(round(new_users * retained_share)))
+        matrix.append(contribution_row)
+    return matrix
+
+
+def _build_mau_summary_rows(
+    cohort_rows: list[dict[str, Any]],
+    cohort_matrix: list[list[int]],
+    conversion_start: float,
+    conversion_target: float,
+    conversion_monthly_improvement_rate: float,
+    retention_start: float,
+    retention_target: float,
+    retention_monthly_improvement_rate: float,
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    active_subscribers_prev = 0.0
+    conversion_rate = conversion_start
+    retention_rate = retention_start
+
+    for index, cohort_row in enumerate(cohort_rows):
+        if index > 0:
+            conversion_rate = conversion_rate + (
+                conversion_target - conversion_rate
+            ) * conversion_monthly_improvement_rate
+            retention_rate = retention_rate + (
+                retention_target - retention_rate
+            ) * retention_monthly_improvement_rate
+        new_users = int(cohort_row["new_users"])
+        mau = int(sum(matrix_row[index] for matrix_row in cohort_matrix))
+        returning_users = max(0, mau - new_users)
 
         retained = active_subscribers_prev * retention_rate
         target_subscribers = mau * conversion_rate
@@ -401,12 +520,15 @@ def _build_audience_rows(
         churned_subscribers = max(0.0, active_subscribers_prev - retained)
         rows.append(
             {
-                "month": month_text,
-                "year_index": tx_row["year_index"],
-                "phase": tx_row["phase"],
-                "mau": int(round(mau)),
+                "month": cohort_row["month"],
+                "year_index": cohort_row["year_index"],
+                "phase": cohort_row["phase"],
+                "new_users": new_users,
+                "returning_users": returning_users,
+                "mau": mau,
                 "subscription_conversion_rate": round(conversion_rate, 4),
                 "subscription_retention_rate": round(retention_rate, 4),
+                "retained_subscribers": int(round(retained)),
                 "new_subscribers": int(round(new_subscribers)),
                 "churned_subscribers": int(round(churned_subscribers)),
                 "active_subscribers": int(round(active_subscribers)),
@@ -416,20 +538,11 @@ def _build_audience_rows(
     return rows
 
 
-def _build_mau_driver_rows(
-    jitter_std: float,
-    seed: int,
-) -> list[dict[str, float]]:
-    rng = random.Random(seed + 101)
-    return [
-        {"mau_noise": round(max(0.85, 1 + rng.gauss(0.0, jitter_std * 0.35)), 6)}
-        for _ in range(PROJECTION_MONTHS)
-    ]
-
-
 def _build_ad_rows(
     audience_rows: list[dict[str, Any]],
-    ad_action_rate: float,
+    sessions_per_mau: float,
+    pageviews_per_session: float,
+    ad_action_rate_per_pageview: float,
     ad_cpa_usd: float,
     jitter_std: float,
     seed: int,
@@ -437,15 +550,12 @@ def _build_ad_rows(
     rng = random.Random(seed + 202)
     rows: list[dict[str, Any]] = []
 
-    for index, audience_row in enumerate(audience_rows):
-        progress = index / max(1, len(audience_rows) - 1)
+    for audience_row in audience_rows:
         mau = float(audience_row["mau"])
-        retention_rate = float(audience_row["subscription_retention_rate"])
-
-        # Assumption: ad actions increase with MAU and are moderately boosted by retention quality.
-        effective_action_rate = ad_action_rate * (0.75 + 0.5 * retention_rate) * (0.95 + 0.1 * progress)
+        sessions = mau * sessions_per_mau
+        pageviews = sessions * pageviews_per_session
         noise = max(0.80, 1 + rng.gauss(0.0, jitter_std * 0.3))
-        ad_actions = mau * effective_action_rate * noise
+        ad_actions = pageviews * ad_action_rate_per_pageview * noise
         ad_revenue = ad_actions * ad_cpa_usd
 
         rows.append(
@@ -453,7 +563,11 @@ def _build_ad_rows(
                 "month": audience_row["month"],
                 "year_index": audience_row["year_index"],
                 "phase": audience_row["phase"],
-                "ad_action_rate": round(effective_action_rate, 5),
+                "sessions_per_mau": round(sessions_per_mau, 2),
+                "pageviews_per_session": round(pageviews_per_session, 2),
+                "sessions": int(round(sessions)),
+                "pageviews": int(round(pageviews)),
+                "ad_action_rate_per_pageview": round(ad_action_rate_per_pageview, 5),
                 "ad_actions": int(round(ad_actions)),
                 "ad_cpa_usd": round(ad_cpa_usd, 2),
                 "ad_revenue_usd": round(ad_revenue, 2),
@@ -470,7 +584,7 @@ def _build_ad_driver_rows(
     rows: list[dict[str, float]] = []
     for _ in range(PROJECTION_MONTHS):
         rows.append(
-            {"ad_noise": round(max(0.80, 1 + rng.gauss(0.0, jitter_std * 0.3)), 6)}
+            {"noise_ad": round(max(0.80, 1 + rng.gauss(0.0, jitter_std * 0.3)), 6)}
         )
     return rows
 
@@ -482,6 +596,12 @@ def _build_subscription_rows(
     rows: list[dict[str, Any]] = []
 
     for audience_row in audience_rows:
+        mau = float(audience_row["mau"])
+        conversion_rate = float(audience_row["subscription_conversion_rate"])
+        retention_rate = float(audience_row["subscription_retention_rate"])
+        retained_subscribers = float(audience_row["retained_subscribers"])
+        new_subscribers = float(audience_row["new_subscribers"])
+        churned_subscribers = float(audience_row["churned_subscribers"])
         active_subscribers = float(audience_row["active_subscribers"])
         revenue = active_subscribers * subscription_price_usd
         rows.append(
@@ -489,6 +609,13 @@ def _build_subscription_rows(
                 "month": audience_row["month"],
                 "year_index": audience_row["year_index"],
                 "phase": audience_row["phase"],
+                "mau": int(round(mau)),
+                "subscription_conversion_rate": round(conversion_rate, 4),
+                "subscription_retention_rate": round(retention_rate, 4),
+                "retained_subscribers": int(round(retained_subscribers)),
+                "new_subscribers": int(round(new_subscribers)),
+                "churned_subscribers": int(round(churned_subscribers)),
+                "active_subscribers": int(round(active_subscribers)),
                 "subscription_price_usd": round(subscription_price_usd, 2),
                 "subscription_revenue_usd": round(revenue, 2),
             }
@@ -529,6 +656,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         projection_start=projection_start,
         monthly_factors=monthly_factors,
         cagr=REVENUE_ASSUMPTIONS.sales_cagr,
+        avg_sell_price_annual_growth=REVENUE_ASSUMPTIONS.avg_sell_price_annual_growth,
         jitter_std=REVENUE_ASSUMPTIONS.jitter_std,
         take_rate=REVENUE_ASSUMPTIONS.take_rate,
         year2_3_min_txns=REVENUE_ASSUMPTIONS.year2_3_min_txns,
@@ -539,21 +667,33 @@ def main(argv: Sequence[str] | None = None) -> int:
         jitter_std=REVENUE_ASSUMPTIONS.jitter_std,
         seed=REVENUE_ASSUMPTIONS.seed,
     )
-    audience_rows = _build_audience_rows(
+    user_cohort_rows = _build_user_cohort_rows(
         transactions_rows=transactions_rows,
         monthly_factors=monthly_factors,
-        mau_start=REVENUE_ASSUMPTIONS.mau_start,
-        mau_end=REVENUE_ASSUMPTIONS.mau_end,
-        conversion_start=REVENUE_ASSUMPTIONS.subscription_conversion_start,
-        conversion_end=REVENUE_ASSUMPTIONS.subscription_conversion_end,
-        retention_start=REVENUE_ASSUMPTIONS.subscription_retention_start,
-        retention_end=REVENUE_ASSUMPTIONS.subscription_retention_end,
+        new_users_start=REVENUE_ASSUMPTIONS.new_users_start,
+        new_users_growth_year1=REVENUE_ASSUMPTIONS.new_users_monthly_growth_year1,
+        new_users_growth_year2=REVENUE_ASSUMPTIONS.new_users_monthly_growth_year2,
+        new_users_growth_year3=REVENUE_ASSUMPTIONS.new_users_monthly_growth_year3,
+        new_user_holiday_spike_multiplier=REVENUE_ASSUMPTIONS.new_user_holiday_spike_multiplier,
         jitter_std=REVENUE_ASSUMPTIONS.jitter_std,
         seed=REVENUE_ASSUMPTIONS.seed,
     )
-    mau_driver_rows = _build_mau_driver_rows(
-        jitter_std=REVENUE_ASSUMPTIONS.jitter_std,
-        seed=REVENUE_ASSUMPTIONS.seed,
+    user_cohort_matrix = _build_user_cohort_matrix(
+        cohort_rows=user_cohort_rows,
+        month_1=REVENUE_ASSUMPTIONS.user_retention_month_1,
+        month_2=REVENUE_ASSUMPTIONS.user_retention_month_2,
+        month_3=REVENUE_ASSUMPTIONS.user_retention_month_3,
+        decay=REVENUE_ASSUMPTIONS.user_retention_decay,
+    )
+    audience_rows = _build_mau_summary_rows(
+        cohort_rows=user_cohort_rows,
+        cohort_matrix=user_cohort_matrix,
+        conversion_start=REVENUE_ASSUMPTIONS.subscription_conversion_start,
+        conversion_target=REVENUE_ASSUMPTIONS.subscription_conversion_end,
+        conversion_monthly_improvement_rate=REVENUE_ASSUMPTIONS.subscription_conversion_monthly_improvement_rate,
+        retention_start=REVENUE_ASSUMPTIONS.subscription_retention_start,
+        retention_target=REVENUE_ASSUMPTIONS.subscription_retention_end,
+        retention_monthly_improvement_rate=REVENUE_ASSUMPTIONS.subscription_retention_monthly_improvement_rate,
     )
     subscriptions_rows = _build_subscription_rows(
         audience_rows=audience_rows,
@@ -561,7 +701,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     ad_rows = _build_ad_rows(
         audience_rows=audience_rows,
-        ad_action_rate=REVENUE_ASSUMPTIONS.ad_action_rate,
+        sessions_per_mau=REVENUE_ASSUMPTIONS.sessions_per_mau,
+        pageviews_per_session=REVENUE_ASSUMPTIONS.pageviews_per_session,
+        ad_action_rate_per_pageview=REVENUE_ASSUMPTIONS.ad_action_rate_per_pageview,
         ad_cpa_usd=REVENUE_ASSUMPTIONS.ad_cpa_usd,
         jitter_std=REVENUE_ASSUMPTIONS.jitter_std,
         seed=REVENUE_ASSUMPTIONS.seed,
@@ -581,11 +723,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         baseline_transaction_count=baseline.transaction_count,
         monthly_factors=monthly_factors,
         marketplace_fee_rows=transactions_rows,
+        user_cohort_rows=user_cohort_rows,
+        user_cohort_matrix=user_cohort_matrix,
         mau_rows=audience_rows,
         subscription_rows=subscriptions_rows,
         ad_rows=ad_rows,
         market_driver_rows=market_driver_rows,
-        mau_driver_rows=mau_driver_rows,
         ad_driver_rows=ad_driver_rows,
     )
 
@@ -594,6 +737,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"baseline_month_gmv_usd={baseline.gmv_usd:.2f}")
     print(f"baseline_month_transaction_count={baseline.transaction_count}")
     print(f"transactions_rows={len(transactions_rows)}")
+    print(f"user_cohort_rows={len(user_cohort_rows)}")
     print(f"audience_rows={len(audience_rows)}")
     print(f"subscriptions_rows={len(subscriptions_rows)}")
     print(f"ad_rows={len(ad_rows)}")
